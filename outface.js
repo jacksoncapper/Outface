@@ -19,7 +19,6 @@ var metas = [
 	{ tag:"style", innerHTML:"@font-face{ font-family:\"ArialBlack\"; src:url(\"" + outfacePath + "/media/arialblack.ttf\"); }" },
 	{ tag:"style", innerHTML:"@font-face{ font-family:\"BabasNeueBold\"; src:url(\"" + outfacePath + "/media/bebasneuebold.ttf\"); }" },
 	{ tag:"script", src:outfacePath + "/utility/eventlistener1.0.0.js" },
-	{ tag:"script", src:outfacePath + "/utility/overthrow0.7.0.js" },
 	{ tag:"script", src:outfacePath + "/utility/fastclick1.0.3.js" },
 	{ tag:"script", src:outfacePath + "/utility/bowser0.7.2.js" },
 	{ tag:"script", src:outfacePath + "/utility/iscroll5.1.3.js" },
