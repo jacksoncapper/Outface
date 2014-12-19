@@ -16,14 +16,10 @@ var metas = [
 	{ tag:"meta", name:"apple-mobile-web-app-capable", content:"yes" },
 	{ tag:"meta", name:"apple-mobile-web-app-status-bar-style", content:"black" },
 	{ tag:"meta", name:"mobile-web-app-capable", content:"yes" },
-	{ tag:"style", innerHTML:"@font-face{ font-family:\"ArialBlack\"; src:url(\"" + outfacePath + "/media/arialblack.ttf\"); }" },
-	{ tag:"style", innerHTML:"@font-face{ font-family:\"BabasNeueBold\"; src:url(\"" + outfacePath + "/media/bebasneuebold.ttf\"); }" },
-	{ tag:"script", src:outfacePath + "/utility/eventlistener1.0.0.js" },
 	{ tag:"script", src:outfacePath + "/utility/fastclick1.0.3.js" },
 	{ tag:"script", src:outfacePath + "/utility/bowser0.7.2.js" },
 	{ tag:"script", src:outfacePath + "/utility/iscroll5.1.3.js" },
-	{ tag:"script", src:outfacePath + "/utility/ckeditor/ckeditor.js" },
-	{ tag:"script", innerHTML:"//CKEDITOR.disableAutoInline = true;" }
+	{ tag:"script", src:outfacePath + "/utility/ckeditor/ckeditor.js" }
 ];
 for(var i = 0; i < metas.length; i++) try{
 	var meta = document.createElement(metas[i].tag);
@@ -60,9 +56,10 @@ var themeClasses = {
 	".important":{ "background-color":themeImportant },
 	".shell .pro":{ "background-color":themePro },
 	".shell .con":{ "background-color":themeCon },
-	"nav li.select a":{ "color":themePrimary, "border-color":themePrimary },
+	"nav li a":{ "color":themePrimary },
+	"nav li.select a":{ "color":themeAccent, "border-color":themeAccent },
 	"p a,small a,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,label a,aside a,blockquote a":{ "color":themeLink },
-	".desk>.tab":{ "background-color":themePrimary }
+	".page>.tab":{ "background-color":themePrimary }
 };
 try{
 	var themeCss = "";
@@ -82,7 +79,7 @@ try{
 var Outface = {};
 Outface._getLayoutClass = function(section){
 	var layoutClass = null;
-	layoutClass = Outface._hasClass(section, "desk") ? "desk" : layoutClass;
+	layoutClass = Outface._hasClass(section, "page") ? "page" : layoutClass;
 	layoutClass = Outface._hasClass(section, "prompt") ? "prompt" : layoutClass;
 	layoutClass = Outface._hasClass(section, "notification") ? "notification" : layoutClass;
 	layoutClass = Outface._hasClass(section, "dialog") ? "dialog" : layoutClass;
@@ -359,7 +356,7 @@ Outface.clear = function(layout, data){
 	for(var i = 0; i < children.length; i++)
 		if(children[i].nodeType == 1)
 			Outface.close(children[i], data, false);
-	Outface.refresh("desk", layout);
+	Outface.refresh("page", layout);
 	Outface.refresh("prompt", layout);
 	Outface.refresh("notification", layout);
 	Outface.refresh("dialog", layout);
@@ -525,26 +522,26 @@ Outface._curtain = function(section){
 	section.addEventListener("closed", closed);
 };
 
-/* Desk */
+/* Page */
 Outface._priority = [];
-Outface._deskRefresh = function(layout){
+Outface._pageRefresh = function(layout){
 	var minimiseWidth = 40;
-	var desks = [];
-	var openDesks = [];
+	var pages = [];
+	var openPages = [];
 	var children = layout.childNodes;
 	for(var i = 0; i < children.length; i++){
 		var child = children[i];
-		if(child.nodeType == 1 && Outface._hasClass(child, "desk")){
-			desks.push(child);
+		if(child.nodeType == 1 && Outface._hasClass(child, "page")){
+			pages.push(child);
 			if(Outface._hasClass(child, "open") && !Outface._hasClass(child, "closing"))
-				openDesks.push(child);
+				openPages.push(child);
 		}
 	}
 	
 	var maximiseCount = 0;
 	var idealMaximiseCount = layout.hasAttribute("maximise-count") ? parseInt(layout.hasAttribute("maximise-count")) : Math.ceil(layout.clientWidth / 600);
-	for(var i = 0; i < openDesks.length; i++)
-		if(!Outface._hasClass(openDesks[i], "minimise"))
+	for(var i = 0; i < openPages.length; i++)
+		if(!Outface._hasClass(openPages[i], "minimise"))
 			maximiseCount++;
 	for(var t = 0; t < Outface._priority.length && maximiseCount > idealMaximiseCount; t++)
 		if(Outface._priority[t].parentNode == layout && !Outface._hasClass(Outface._priority[t], "minimise"))
@@ -569,64 +566,64 @@ Outface._deskRefresh = function(layout){
 		}
 	
 	var unweightedAggregateWidth = layout.clientWidth;
-	for(var i = 0; i < openDesks.length; i++)
-		if(Outface._hasClass(openDesks[i], "minimise"))
+	for(var i = 0; i < openPages.length; i++)
+		if(Outface._hasClass(openPages[i], "minimise"))
 			unweightedAggregateWidth -= minimiseWidth;
-		else if(openDesks[i].hasAttribute("deckWeight"))
-			unweightedAggregateWidth -= parseFloat(openDesks[i].getAttribute("deckWeight"));
+		else if(openPages[i].hasAttribute("deckWeight"))
+			unweightedAggregateWidth -= parseFloat(openPages[i].getAttribute("deckWeight"));
 	var unweightedMaximiseCount = 0;
-	for(var i = 0; i < openDesks.length; i++)
-		if(!Outface._hasClass(openDesks[i], "minimise"))
-			if(!openDesks[i].hasAttribute("deckWeight"))
+	for(var i = 0; i < openPages.length; i++)
+		if(!Outface._hasClass(openPages[i], "minimise"))
+			if(!openPages[i].hasAttribute("deckWeight"))
 				unweightedMaximiseCount++;
 	if(unweightedMaximiseCount > 0)
 		var unweightedMaximiseWidth = unweightedAggregateWidth / unweightedMaximiseCount;
 	
 	var x = 0;
-	for(var i = 0; i < desks.length; i++){
-		var desk = desks[i];
-		if(Outface._hasClass(desk, "open")){
+	for(var i = 0; i < pages.length; i++){
+		var page = pages[i];
+		if(Outface._hasClass(page, "open")){
 			var width = 0;
-			if(desk.hasAttribute("deckWeight")){
-				width = parseFloat(desk.getAttribute("deckWeight"));
+			if(page.hasAttribute("pageWeight")){
+				width = parseFloat(page.getAttribute("pageWeight"));
 				if(width > layout.clientWidth)
 					width = layout.clientWidth + "px";
 			}
 			else
 				width = unweightedMaximiseWidth;
-			desk.style.width = Math.ceil(width) + "px";
-			if(Outface._hasClass(desk, "minimise"))
+			page.style.width = Math.ceil(width) + "px";
+			if(Outface._hasClass(page, "minimise"))
 				width = minimiseWidth;
 			
 			var opensBefore = false;
 			for(var t = i - 1; t > -1; t--)
-				if(Outface._hasClass(desks[t], "open")){
+				if(Outface._hasClass(pages[t], "open")){
 					opensBefore = true;
 					break;
 				}
 			if(!opensBefore){
 				var onlyOpen = true;
-				for(var t = 0; t < desks.length; t++)
-					if(Outface._hasClass(desks[t], "open") && desks[t] != desk){
+				for(var t = 0; t < pages.length; t++)
+					if(Outface._hasClass(pages[t], "open") && pages[t] != page){
 						onlyOpen = false;
 						break;
 					}
 			}
-			if(desk.outfaceDeskOpening === true){
-				delete desk.outfaceDeskOpening;
-				var source = opensBefore == true || onlyOpen == true ? layout.clientWidth : -desk.clientWidth;
-				desk.style.webkitTransform = desk.style.transform = "translate3d(" + source + "px,0,0)";
-				desk.style.webkitTransition = desk.style.transition = "none";
-				desk.offsetHeight;
-				desk.style.webkitTransition = desk.style.transition = "";
+			if(page.outfacePageOpening === true){
+				delete page.outfacePageOpening;
+				var source = opensBefore == true || onlyOpen == true ? layout.clientWidth : -page.clientWidth;
+				page.style.webkitTransform = page.style.transform = "translate3d(" + source + "px,0,0)";
+				page.style.webkitTransition = page.style.transition = "none";
+				page.offsetHeight;
+				page.style.webkitTransition = page.style.transition = "";
 			}
-			else if(desk.outfaceDeskClosing === true){
-				delete desk.outfaceDeskClosing;
-				var destination = opensBefore == true || onlyOpen == true ? layout.clientWidth * 2 : -desk.clientWidth * 2;
-				desk.style.webkitTransform = desk.style.transform = "translate3d(" + destination + "px,0,0)";
+			else if(page.outfacePageClosing === true){
+				delete page.outfacePageClosing;
+				var destination = opensBefore == true || onlyOpen == true ? layout.clientWidth * 2 : -page.clientWidth * 2;
+				page.style.webkitTransform = page.style.transform = "translate3d(" + destination + "px,0,0)";
 			}
-			if(!Outface._hasClass(desk, "closing")){
-				desk.style.webkitTransform = desk.style.transform = "translate3d(" + x + "px,0,0)";
+			if(!Outface._hasClass(page, "closing")){
+				page.style.webkitTransform = page.style.transform = "translate3d(" + x + "px,0,0)";
 				x += Math.floor(width);
 			}
 		}		
@@ -635,39 +632,41 @@ Outface._deskRefresh = function(layout){
 	// Cascade
 	for(var i = 0; i < layout.childNodes.length; i++)
 		if(layout.childNodes[i].nodeType == 1)
-			Outface._deskRefresh(layout.childNodes[i]);
+			Outface._pageRefresh(layout.childNodes[i]);
 };
-Outface._deskOpen = function(section){
+Outface._pageOpen = function(section){
 	var index = Outface._priority.indexOf(section);
 	if(index > -1)
 		Outface._priority.splice(index, 1);
 	Outface._priority.push(section);
 	
-	section.outfaceDeskOpening = true;
+	section.outfacePageOpening = true;
 };
-Outface._deskClose = function(section){
+Outface._pageClose = function(section){
 	var index = Outface._priority.indexOf(section);
 	if(index > -1)
 		Outface._priority.splice(index, 1);
 	Outface._priority.splice(0, 0, section);
 	
-	section.outfaceDeskClosing = true;
+	section.outfacePageClosing = true;
 };
-Outface.deskMinimise = function(section){
+Outface.pageMinimise = function(section){
 	var index = Outface._priority.indexOf(section);
 	if(index > -1)
 		Outface._priority.splice(index, 1);
 	Outface._priority.splice(0, 0, section);
 	
 	Outface._addClass(section, "minimise");
+	Outface._pageRefresh(section.parentNode);
 };
-Outface.deskMaximise = function(section){
+Outface.pageMaximise = function(section){
 	var index = Outface._priority.indexOf(section);
 	if(index > -1)
 		Outface._priority.splice(index, 1);
 	Outface._priority.push(section);
 	
 	Outface._removeClass(section, "minimise");
+	Outface._pageRefresh(section.parentNode);
 };
 
 /* Prompt */
@@ -946,4 +945,4 @@ window.addEventListener("load", function(){
 		e.preventDefault();
 	});
 });
-window.addEventListener("resize", function(){ Outface._deskRefresh(document.body); });
+window.addEventListener("resize", function(){ Outface._pageRefresh(document.body); });
