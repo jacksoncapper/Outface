@@ -105,9 +105,9 @@ button:disabled{ -webkit-transform:scale(0,0);transform:scale(0,0); }
 button.load:disabled{ -webkit-transform:scale(1,1);transform:scale(1,1); }
 /* Shades */
 button{ color:#FFF; }
-button:active,button.load:disabled{ background-color:rgb(33,33,33); }
+button:active,button.load:disabled{ background-color:rgb(33,33,33) !important; }
 .shell button{ border:solid 1px #FFF; background-color:Transparent; }
-.shell button:active,.shell button.load{ background-color:#FFF; color:#000; }
+.shell button:active,.shell button.load{ background-color:#FFF !important; color:#000 !important; }
 
 /* Featured Button */
 button.feature{ font-size:12px; font-weight:bold; width:12em; height:12em; border-radius:0; }
