@@ -51,11 +51,11 @@ var themeClasses = {
 	"button.primary":{ "background-color":themeAccent },
 	"button.control":{ "background-color":themePrimary },
 	"button.icon":{ "color":themePrimary },
-	".pro":{ "background-color":themePro },
-	".con":{ "background-color":themeCon },
+	".pro":{ "background-color":themePro + " !important" },
+	".con":{ "background-color":themeCon + " !important" },
+	".shell .pro":{ "background-color":themePro + " !important" },
+	".shell .con":{ "background-color":themeCon + " !important" },
 	".important":{ "background-color":themeImportant },
-	".shell .pro":{ "background-color":themePro },
-	".shell .con":{ "background-color":themeCon },
 	"nav li a":{ "color":themePrimary },
 	"nav li.select a":{ "color":themeAccent, "border-color":themeAccent },
 	"p a,small a,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,label a,aside a,blockquote a":{ "color":themeLink },
@@ -619,7 +619,7 @@ Outface._pageRefresh = function(layout){
 			}
 			else if(page.outfacePageClosing === true){
 				delete page.outfacePageClosing;
-				var destination = opensBefore == true || onlyOpen == true ? layout.clientWidth * 2 : -page.clientWidth * 2;
+				var destination = opensBefore == true || onlyOpen == true ? layout.clientWidth : -page.clientWidth;
 				page.style.webkitTransform = page.style.transform = "translate3d(" + destination + "px,0,0)";
 			}
 			if(!Outface._hasClass(page, "closing")){
