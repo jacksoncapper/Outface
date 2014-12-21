@@ -133,7 +133,7 @@ button.subfeature.cel:active,button.subfeature.cel.load{ background-color:#FFF; 
 button.gallery{ font-size:10px; background-color:Transparent; padding:5px; border:none; border-top:solid 3px Transparent; margin-top:0; border-radius:0; }
 button.gallery i{ display:block; font-size:2em; }
 /* Shades */
-button.gallery:active,button.gallery.load{ background-color:Transparent; }
+button.gallery:active,button.gallery.load{ background-color:Transparent !important; }
 button.gallery.select{ background-color:Transparent; }
 .shell button.gallery{ color:#FFF; }
 
