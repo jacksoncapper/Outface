@@ -113,11 +113,11 @@ button:active,button.load:disabled{ background-color:rgb(33,33,33) !important; }
 button.feature{ font-size:12px; font-weight:bold; width:12em; height:12em; border-radius:0; }
 button.feature i{ display:block; font-size:2em; margin-bottom:3px; }
 /* Shades */
-button.feature:active,button.feature.load{ background-color:rgb(33,33,33); }
+button.feature:active,button.feature.load{ background-color:rgb(33,33,33) !important; }
 button.feature.cel{ background-color:rgba(255,255,255,.57); color:#000; }
-button.feature.cel:active{ background-color:#FFF; }
+button.feature.cel:active{ background-color:#FFF !important; }
 .shell button.feature.cel{ background-color:rgba(255,255,255,.57); color:#000; border:none; }
-.shell button.feature.cel:active,.shell button.feature.cel.load{ background-color:#FFF; border:none; }
+.shell button.feature.cel:active,.shell button.feature.cel.load{ background-color:#FFF !important; border:none; }
 
 /* Subfeatured Button */
 button.subfeature{ padding:5px; font-size:12px; width:7.5em; height:7.5em; border-radius:0; }
