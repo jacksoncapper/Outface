@@ -45,7 +45,7 @@ var themeClasses = {
 	"button":{ "background-color":themePrimary },
 	"button.subfeatured":{ "button.subfeature":themePrimary },
 	"button.gallery":{ "color":themePrimary },
-	"button.gallery:active":{ "color":themeAccent },
+	"button.gallery:active":{ "color":themeAccent + "!important" },
 	"button.gallery.select":{ "color":themeAccent, "border-color":themeAccent },
 	"button.navcontrol":{ "border-color":themePrimary, "color":themePrimary },
 	"button.primary":{ "background-color":themeAccent },
