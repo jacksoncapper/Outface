@@ -51,6 +51,8 @@ var themeClasses = {
 	"button.primary":{ "background-color":themeAccent },
 	"button.control":{ "background-color":themePrimary },
 	"button.icon":{ "color":themePrimary },
+	"button.select":{ "background-color":themeAccent },
+	"output.special":{ "color":themePrimary },
 	".pro":{ "background-color":themePro + " !important" },
 	".con":{ "background-color":themeCon + " !important" },
 	".shell .pro":{ "background-color":themePro + " !important" },
@@ -142,8 +144,9 @@ Outface.register = function(element, context, data){
 	}
 	
 	// CKEditor
-	if(Outface._hasClass(element, "richedit")){
-		CKEDITOR.inline(element, {
+	/*if(Outface._hasClass(element, "richedit") && element.ckeditor == null){
+		element.setAttribute("contenteditable", "true");
+		element.ckeditor = CKEDITOR.inline(element, {
 			allowedContent: true,
 			toolbar:[
 				['Format','Bold','Italic','Underline','StrikeThrough','-','Outdent','Indent'],
@@ -164,7 +167,7 @@ Outface.register = function(element, context, data){
 			reader.readAsDataURL(event.dataTransfer.files[0]);
 			return false;
 		};
-	}
+	}*/
 	
 	// iScroll
 	if(Outface._hasClass(element, "scroll") || Outface._hasClass(element, "scroll-x") || Outface._hasClass(element, "scroll-y")){
@@ -745,7 +748,6 @@ Outface.promptLoad = function(context, content, onCancel){
 	buttons = [];
 	if(onCancel != null)
 		buttons.push({ content:"<i class='fa fa-times'></i> CANCEL", value:false });
-	
 	context.outfaceLoader = Outface.promptX(contentX, function(r){
 		if(r === false && onCancel)
 			onCancel();
@@ -907,9 +909,18 @@ Outface.menuitemToggle = function(menuitem){
 	else
 		Outface._addClass(menuitem, "select");
 };
+Outface.bind = function(menuitem, section){
+	section.addEventListener("open", function(){
+		Outface.menuitemSelect(menuitem);
+	});
+	section.addEventListener("close", function(){
+		Outface.menuitemDeselect(menuitem);
+	});
+	return section;
+};
 
 /* Load */
-Outface.load = function(element){
+Outface.loadIcon = function(element){
 	element.disabled = true;
 	
 	var icon = element.getElementsByTagName("i")[0];
@@ -920,7 +931,7 @@ Outface.load = function(element){
 	element.oIconClassName = icon.className;
 	icon.className = "fa fa-cog fa-spin load";
 };
-Outface.loaded = function(element){
+Outface.loadedIcon = function(element){
 	element.disabled = false;
 	
 	var icon = element.getElementsByTagName("i")[0];
@@ -930,6 +941,40 @@ Outface.loaded = function(element){
 	Outface._removeClass(element, "load")
 	icon.className = element.oIconClassName;
 	delete element.oIconClassName;
+};
+Outface.load = function(element){
+	if(element.outfaceLoad != null)
+		return;
+	var load = document.createElement("div");
+	load.className = "load-cover";
+	load.innerHTML = "<p><i class='fa fa-cog fa-spin'></i></p>";
+	element.appendChild(load);
+	element.outfaceLoad = load;
+	load.style.opacity = "1";
+	load.style.webkitTransition = load.style.transition = "none";
+	load.offsetHeight;
+	load.style.opacity = "";
+	load.style.webkitTransition = load.style.transition = "";
+};
+Outface.loaded = function(element){
+	element.outfaceLoad.style.opacity = "0";
+	
+	element.removeEventListener("transitionend", element.loadTransitionend);
+	clearTimeout(element.loadTransitionendTimeout);
+	element.loadTransitionend = function(e){
+		if(e.target != element)
+			return;
+		element.removeEventListener("transitionend", element.loadTransitionend);
+		delete element.loadTransitionend;
+		clearTimeout(element.loadTransitionendTimeout);
+		delete element.loadTransitionendTimeout;
+
+		element.removeEventListener("closed", closed);
+		element.removeChild(element.outfaceLoad);
+		delete element.outfaceLoad;
+	};
+	element.addEventListener("transitionend", element.loadTransitionend);
+	element.loadTransitionendTimeout = setTimeout(function(){ element.loadTransitionend({ target:element }); }, 500);
 };
 
 window.addEventListener("load", function(){
