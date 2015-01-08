@@ -31,59 +31,39 @@ for(var i = 0; i < metas.length; i++) try{
 	document.head.appendChild(meta);
 }catch(e){}
 
-/* Theme */
-var themePrimary = typeof themePrimary != "undefined" ? themePrimary : "#607D8B";
-var themeAccent = typeof themeAccent != "undefined" ? themeAccent : "#FF5722";
-var themePro = typeof themePro != "undefined" ? themePro : "#4CAF50";
-var themeCon = typeof themeCon != "undefined" ? themeCon : "#F44336";
-var themeImportant = typeof themeImportant != "undefined" ? themeCon : "#EF6C00";
-var themeLink = typeof themeLink != "undefined" ? themeLink : "#03A9F4";
-var themeClasses = {
-	".primary":{ "background-color":themePrimary },
-	"h1,h2,h3,h4,h5,h6":{ "color":themePrimary },
-	"hr":{ "background-color":themePrimary },
-	"button":{ "background-color":themePrimary },
-	"button.subfeatured":{ "button.subfeature":themePrimary },
-	"button.gallery":{ "color":themePrimary },
-	"button.gallery:active":{ "color":themeAccent + "!important" },
-	"button.gallery.select":{ "color":themeAccent, "border-color":themeAccent },
-	"button.navcontrol":{ "border-color":themePrimary, "color":themePrimary },
-	"button.primary":{ "background-color":themeAccent },
-	"button.control":{ "background-color":themePrimary },
-	"button.icon":{ "color":themePrimary },
-	"button.select":{ "background-color":themeAccent },
-	"output.special":{ "color":themePrimary },
-	".pro":{ "background-color":themePro + " !important" },
-	".con":{ "background-color":themeCon + " !important" },
-	".shell .pro":{ "background-color":themePro + " !important" },
-	".shell .con":{ "background-color":themeCon + " !important" },
-	".important":{ "background-color":themeImportant },
-	"nav li a":{ "color":themePrimary },
-	"nav li.select a":{ "color":themeAccent, "border-color":themeAccent },
-	"p a,small a,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,label a,aside a,blockquote a":{ "color":themeLink },
-	".page>.tab":{ "background-color":themePrimary }
-};
-try{
-	var themeCss = "";
-	var style = document.createElement("style");
-	for(var themeClassName in themeClasses){
-		themeClassCss = themeClassName + "{";
-		for(var themeClassAttributeName in themeClasses[themeClassName])
-			themeClassCss += " " + themeClassAttributeName + ":" + themeClasses[themeClassName][themeClassAttributeName] + ";"
-		themeClassCss += " }\r\n";
-		themeCss += themeClassCss;
-	}
-	style.innerHTML = themeCss;
-	document.head.appendChild(style);
-}catch(e){}
-
 /* Core */
 var Outface = {};
+Outface._priority = [];
+Outface._curtain = function(section){
+	var curtain = document.createElement("div");
+	curtain.className = "curtain";
+	if(!Outface._hasClass(section, "modal")){
+		curtain.addEventListener("mousedown", function(e){ if(e.target == curtain) Outface.close(section); });
+		curtain.addEventListener("touchstart", function(e){ if(e.target == curtain) Outface.close(section); });
+	}
+	section.parentNode.insertBefore(curtain, section);
+	section.curtain = curtain;
+	curtain.style.opacity = "0";
+	curtain.style.webkitTransition = curtain.style.transition = "none";
+	curtain.offsetHeight;
+	curtain.style.opacity = "";
+	curtain.style.webkitTransition = curtain.style.transition = "";
+	
+	section.addEventListener("close", function(){ curtain.style.opacity = "0"; });
+	
+	var closed = function(){
+		section.removeEventListener("closed", closed);
+		curtain.parentNode.removeChild(curtain);
+		delete curtain;
+		delete section.curtain;
+	};
+	section.addEventListener("closed", closed);
+};
 Outface._getLayoutClass = function(section){
 	var layoutClass = null;
 	layoutClass = Outface._hasClass(section, "page") ? "page" : layoutClass;
 	layoutClass = Outface._hasClass(section, "prompt") ? "prompt" : layoutClass;
-	layoutClass = Outface._hasClass(section, "notification") ? "notification" : layoutClass;
+	layoutClass = Outface._hasClass(section, "notify") ? "notify" : layoutClass;
 	layoutClass = Outface._hasClass(section, "dialog") ? "dialog" : layoutClass;
 	return layoutClass;
 };
@@ -112,109 +92,10 @@ Outface._event = function(element, name, data, cascade){
 		}
 	}
 };
-Outface.script = function(){
-	return document.scripts[document.scripts.length - 1].parentNode;
-};
-Outface.register = function(element, context, data){
-	if(element.hasAttribute("template"))
-		return;
-	
-	if(context == null){
-		var context = element.tagName != "BODY" ? element.parentNode : element;
-		while(context.tagName != "SECTION" && context.tagName != "BODY")
-			context = context.parentNode;
-		if(element.tagName == "SECTION"){
-			element.context = context;
-			context = element;
-		}
-	}
-	for(var i = 0; i < element.childNodes.length; i++)
-		if(element.childNodes[i].nodeType == 1){
-			var child = element.childNodes[i];
-			child.context = context;
-			if(child.hasAttribute("name"))
-				context[child.getAttribute("name")] = child;
-			Outface.register(child, child.tagName != "SECTION" ? context : child, data);
-		}
-	if(element.register != null){
-		element.registerx = element.register;
-		element.register = null;
-		element.registerx(data);
-		element.registerx = null;
-	}
-	
-	// CKEditor
-	/*if(Outface._hasClass(element, "richedit") && element.ckeditor == null){
-		element.setAttribute("contenteditable", "true");
-		element.ckeditor = CKEDITOR.inline(element, {
-			allowedContent: true,
-			toolbar:[
-				['Format','Bold','Italic','Underline','StrikeThrough','-','Outdent','Indent'],
-				['NumberedList','BulletedList','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-				['Image','-','Link','Source']
-			]
-		});
-		element.ondrop = function(event){
-			event.preventDefault && event.preventDefault();
-			var reader = new FileReader();
-			reader.onloadend = function(e){
-				var temp = document.createElement("div");
-				var img = document.createElement("img");
-				img.src = e.target.result;
-				temp.appendChild(img);
-				document.execCommand("insertHTML", true, "<p>" + temp.innerHTML + "</p>");
-		    };
-			reader.readAsDataURL(event.dataTransfer.files[0]);
-			return false;
-		};
-	}*/
-	
-	// iScroll
-	if(Outface._hasClass(element, "scroll") || Outface._hasClass(element, "scroll-x") || Outface._hasClass(element, "scroll-y")){
-		var scrollX = Outface._hasClass(element, "scroll-x");
-		var scrollY = Outface._hasClass(element, "scroll-y");
-		var scrollFree = Outface._hasClass(element, "scroll-free");
-		if(!scrollX && !scrollY)
-			scrollX = scrollY = true;
-		var config = {
-			scrollX : scrollX,
-			scrollY : scrollY,
-			mouseWheel : true,
-			preventDefaultException:{tagName:/.*/}
-		};
-		if(element.iscrollConfig && JSON.stringify(element.iscrollConfig) != JSON.stringify(config)){
-			element.iscroll.destroy();
-			element.iscroll = null;
-			element.iscrollConfig = null;
-		}
-		if(!element.iscroll){
-			element.iscroll = new IScroll(element, config);
-			element.iscrollConfig = config;
-		}
-		else
-			setTimeout(function(){ element.iscroll.refresh(); }, 250);
-	}
-};
-Outface.clone = function(template, data){
-	var clone = template.cloneNode(true);
-	template.parentNode.insertBefore(clone, template);
-	clone.removeAttribute("id");
-	clone.removeAttribute("name");
-	clone.removeAttribute("template");
-	clone.setAttribute("templated", "");
-	clone.register = template.register;
-	var elements = template.getElementsByTagName("*");
-	var cloneElements = clone.getElementsByTagName("*");
-	for(var i = 0; i < cloneElements.length; i++)
-		cloneElements[i].register = elements[i].register;
-	Outface.register(clone, null, data);
-	return clone;
-};
-Outface.open = function(section, data, _refresh, _root){
+Outface._open = function(section, data, _root){
 	_root = _root != null ? _root : true;
-	_refresh = _refresh != null ? _refresh : true;
 	if(Outface._hasClass(section, "open") && !Outface._hasClass(section, "closing"))
-		return;
+		return false;
 
 	Outface._addClass(section, "open");
 	Outface._addClass(section, "opening");
@@ -243,10 +124,12 @@ Outface.open = function(section, data, _refresh, _root){
 
 	var layoutClass = Outface._getLayoutClass(section);	
 	if(layoutClass != null)
-		Outface["_" + layoutClass + "Open"](section);
+		Outface[layoutClass]._open(section);
 	
-	if(_refresh)
-		Outface.refresh(section);
+	var index = Outface._priority.indexOf(section);
+	if(index > -1)
+		Outface._priority.splice(index, 1);
+	Outface._priority.push(section);
 	
 	if(!_root) // Force in place as child
 		setTimeout(function(section){
@@ -263,7 +146,7 @@ Outface.open = function(section, data, _refresh, _root){
 			var child = children[i];
 			if(child.nodeType == 1 && Outface._hasClass(child, "open") && !Outface._hasClass(child, "closing")){
 				Outface._removeClass(child, "open")
-				Outface.open(child, data, true, false);
+				Outface._open(child, data, false);
 			}
 			else
 				cascadeOpen(child);
@@ -273,11 +156,12 @@ Outface.open = function(section, data, _refresh, _root){
 	
 	if(_root) // Needed for iScroll in case of new width
 		Outface.register(section.parentNode);
+	
+	return true;
 };
-Outface.close = function(section, data, _refresh){
-	_refresh = _refresh != null ? _refresh : true;
+Outface._close = function(section, data){
 	if(!Outface._hasClass(section, "open") || Outface._hasClass(section, "closing"))
-		return;
+		return false;
 	
 	Outface._addClass(section, "open");
 	Outface._addClass(section, "closing");
@@ -311,91 +195,177 @@ Outface.close = function(section, data, _refresh){
 	
 	var layoutClass = Outface._getLayoutClass(section);
 	if(layoutClass != null)
-		Outface["_" + layoutClass + "Close"](section, data);
-		
-	if(_refresh)
-		Outface.refresh(section);
+		Outface[layoutClass]._close(section, data);
+	
+	var index = Outface._priority.indexOf(section);
+	if(index > -1)
+		Outface._priority.splice(index, 1);
+	Outface._priority.splice(0, 0, section);
+	
+	return true;
 };
-Outface.openClear = function(section, data){
+Outface.script = function(){
+	return document.scripts[document.scripts.length - 1].parentNode;
+};
+Outface.register = function(element, context, data){
+	if(element.hasAttribute("template"))
+		return;
+	
+	if(context == null){
+		var context = element.tagName != "BODY" ? element.parentNode : element;
+		while(context.tagName != "SECTION" && context.tagName != "BODY")
+			context = context.parentNode;
+		if(element.tagName == "SECTION"){
+			element.context = context;
+			context = element;
+		}
+	}
+	for(var i = 0; i < element.childNodes.length; i++)
+		if(element.childNodes[i].nodeType == 1){
+			var child = element.childNodes[i];
+			child.context = context;
+			if(child.hasAttribute("name"))
+				context[child.getAttribute("name")] = child;
+			Outface.register(child, child.tagName != "SECTION" ? context : child, data);
+		}
+	if(element.register != null){
+		element.registerx = element.register;
+		element.register = null;
+		element.registerx(data);
+		element.registerx = null;
+	}
+	
+	// iScroll
+	if(Outface._hasClass(element, "scroll") || Outface._hasClass(element, "scroll-x") || Outface._hasClass(element, "scroll-y")){
+		var scrollX = Outface._hasClass(element, "scroll-x");
+		var scrollY = Outface._hasClass(element, "scroll-y");
+		var scrollFree = Outface._hasClass(element, "scroll-free");
+		if(!scrollX && !scrollY)
+			scrollX = scrollY = true;
+		var config = {
+			scrollX : scrollX,
+			scrollY : scrollY,
+			mouseWheel : true,
+			preventDefaultException:{tagName:/.*/}
+		};
+		if(element.iscrollConfig && JSON.stringify(element.iscrollConfig) != JSON.stringify(config)){
+			element.iscroll.destroy();
+			element.iscroll = null;
+			element.iscrollConfig = null;
+		}
+		if(!element.iscroll){
+			element.iscroll = new IScroll(element, config);
+			element.iscrollConfig = config;
+		}
+		else
+			setTimeout(function(){ element.iscroll.refresh(); }, 250);
+	}
+};
+Outface.clone = function(template, data){
+	var clone = template.cloneNode(true);
+	clone.template = template;
+	clone.data = data;
+	template.parentNode.insertBefore(clone, template);
+	clone.removeAttribute("id");
+	clone.removeAttribute("name");
+	clone.removeAttribute("template");
+	clone.setAttribute("templated", "");
+	clone.register = template.register;
+	var elements = template.getElementsByTagName("*");
+	var cloneElements = clone.getElementsByTagName("*");
+	for(var i = 0; i < cloneElements.length; i++)
+		cloneElements[i].register = elements[i].register;
+	Outface.register(clone, null, data);
+	return clone;
+};
+Outface.open = function(section, data){
+	if(Outface._open(section, data))
+		Outface.history.pushState(section.parentNode, [{
+			section: section,
+			action: "open",
+			data: data
+		}]);
+};
+Outface.close = function(section, data){
+	if(Outface._close(section, data))
+		Outface.history.pushState(section.parentNode, [{
+			section: section,
+			action: "close",
+			data: data
+		}]);
+};
+Outface.openX = function(section, data){
+	var state = [];
+	if(Outface._open(section, data))
+		state.push({
+			section: section,
+			action: "open",
+			data: data
+		});
 	var siblings = section.parentNode.childNodes;
 	for(var i = 0; i < siblings.length; i++){
 		var sibling = siblings[i];
 		if(sibling.nodeType == 1 && sibling != section)
-			Outface.close(sibling, data, false);
+			if(Outface._getLayoutClass(sibling) == "page")
+				if(Outface._close(sibling, data))
+					state.push({
+						section: sibling,
+						action: "close",
+						data: data
+					});
 	}
-	Outface.open(section, data, true);
-}
-Outface.toggle = function(section, data){
-	if(Outface._hasClass(section, "open"))
-		Outface.close(section, data, true);
-	else
-		Outface.open(section, data, true);
+	Outface.history.pushState(section.parentNode, state);
 };
-Outface.shift = function(layout, shift){
-	var currentIndex = 0;
-	
-	var sections = [];
-	var currentIndex = null;
-	var children = layout.childNodes;
-	for(var i = 0; i < children.length; i++)
-		if(children[i].nodeType == 1){
-			var child = children[i];
-			var layoutClass = Outface._getLayoutClass(child);
-			if(layoutClass != null)
-				sections.push(child);
-			if(Outface._hasClass(child, "open"))
-				currentIndex = currentIndex === null ? sections.length - 1 : currentIndex;
-		}
-	
-	if(typeof shift == "number")
-		currentIndex = shift;
-	else if(typeof shift == "boolean")
-		currentIndex += shift ? 1 : -1;
 
-	Outface.openClear(sections[currentIndex]);
+/* Theme */
+Outface.theme = {};
+Outface.theme.prime = typeof Outface_theme_prime != "undefined" ? Outface_theme_prime : "#607D8B";
+Outface.theme.accent = typeof Outface_theme_accent != "undefined" ? Outface_theme_accent : "#FF5722";
+Outface.theme.pro = typeof Outface_theme_pro != "undefined" ? Outface_theme_pro : "#4CAF50";
+Outface.theme.con = typeof Outface_theme_con != "undefined" ? Outface_theme_con : "#F44336";
+Outface.theme.important = typeof Outface_theme_important != "undefined" ? Outface_theme_important : "#EF6C00";
+Outface.theme.link = typeof Outface_theme_link != "undefined" ? Outface_theme_link : "#03A9F4";
+Outface.theme.apply = function(){
+	var classes = {
+		".prime":{ "background-color":Outface.theme.prime },
+		"h1,h2,h3,h4,h5,h6":{ "color":Outface.theme.prime },
+		"hr":{ "background-color":Outface.theme.prime },
+		"button":{ "background-color":Outface.theme.prime },
+		"button.subfeatured":{ "button.subfeature":Outface.theme.prime },
+		"button.gallery":{ "color":Outface.theme.prime },
+		"button.gallery:active":{ "color":Outface.theme.accent + "!important" },
+		"button.gallery.select":{ "color":Outface.theme.accent, "border-color":Outface.theme.accent },
+		"button.navcontrol":{ "border-color":Outface.theme.prime, "color":Outface.theme.prime },
+		"button.primary":{ "background-color":Outface.theme.accent },
+		"button.control":{ "background-color":Outface.theme.prime },
+		"button.icon":{ "color":Outface.theme.prime },
+		"button.select":{ "background-color":Outface.theme.accent },
+		"output.special":{ "color":Outface.theme.prime },
+		".pro":{ "background-color":Outface.theme.pro + " !important" },
+		".con":{ "background-color":Outface.theme.con + " !important" },
+		".shell .pro":{ "background-color":Outface.theme.pro + " !important" },
+		".shell .con":{ "background-color":Outface.theme.con + " !important" },
+		".important":{ "background-color":Outface.theme.important },
+		"nav li a":{ "color":Outface.theme.prime },
+		"nav li.select a":{ "color":Outface.theme.accent, "border-color":Outface.theme.accent },
+		"p a,small a,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,label a,aside a,blockquote a":{ "color":Outface.theme.link },
+		".page>.tab":{ "background-color":Outface.theme.prime }
+	};
+	try{
+		var css = "";
+		var style = document.createElement("style");
+		for(var className in classes){
+			classCss = className + "{";
+			for(var classAttributeName in classes[className])
+				classCss += " " + classAttributeName + ":" + classes[className][classAttributeName] + ";"
+			classCss += " }\r\n";
+			css += classCss;
+		}
+		style.innerHTML = css;
+		document.head.appendChild(style);
+	}catch(e){}
 };
-Outface.clear = function(layout, data){
-	var children = layout.childNodes;
-	for(var i = 0; i < children.length; i++)
-		if(children[i].nodeType == 1)
-			Outface.close(children[i], data, false);
-	Outface.refresh("page", layout);
-	Outface.refresh("prompt", layout);
-	Outface.refresh("notification", layout);
-	Outface.refresh("dialog", layout);
-};
-Outface.closeAfter = function(section, data){
-	var children = section.parentNode.childNodes;
-	var after = false;
-	for(var i = 0; i < children.length; i++){
-		if(after)
-			Outface.close(children[i], data, false);
-		after = children[i].nodeType == 1 && section == children[i] ? true : after;
-	}
-	Outface.refresh(section);
-};
-Outface.closeBefore = function(section, data){
-	var children = section.parentNode.childNodes;
-	var before = false;
-	for(var i = children.length - 1; i > -1; i--){
-		if(before)
-			Outface.close(children[i], data, false);
-		before = children[i].nodeType == 1 && section == children[i] ? true : before;
-	}
-	Outface.refresh(section);
-};
-Outface.refresh = function(layoutClass_section, section){
-	if(typeof layoutClass_section == "string"){
-		var layoutClass = layoutClass_section;
-		var layout = section;
-	}
-	else{
-		var layoutClass = Outface._getLayoutClass(layoutClass_section);
-		var layout = layoutClass_section.parentNode;
-	}
-	if(Outface["_" + layoutClass + "Refresh"])
-		Outface["_" + layoutClass + "Refresh"](layout);
-};
+Outface.theme.apply();
 
 /* Upbrowse */
 Outface.upbrowse = function(){
@@ -498,182 +468,58 @@ Outface.webapp = function(){
 };
 window.addEventListener("load", Outface.webapp);
 
-/* Curtain */
-Outface._curtain = function(section){
-	var curtain = document.createElement("div");
-	curtain.className = "curtain";
-	if(!Outface._hasClass(section, "modal")){
-		curtain.addEventListener("mousedown", function(e){ if(e.target == curtain) Outface.close(section); });
-		curtain.addEventListener("touchstart", function(e){ if(e.target == curtain) Outface.close(section); });
-	}
-	section.parentNode.insertBefore(curtain, section);
-	section.curtain = curtain;
-	curtain.style.opacity = "0";
-	curtain.style.webkitTransition = curtain.style.transition = "none";
-	curtain.offsetHeight;
-	curtain.style.opacity = "";
-	curtain.style.webkitTransition = curtain.style.transition = "";
-	
-	section.addEventListener("close", function(){ curtain.style.opacity = "0"; });
-	
-	var closed = function(){
-		section.removeEventListener("closed", closed);
-		curtain.parentNode.removeChild(curtain);
-		delete curtain;
-		delete section.curtain;
-	};
-	section.addEventListener("closed", closed);
-};
-
 /* Page */
-Outface._priority = [];
-Outface._pageRefresh = function(layout){
-	var minimiseWidth = 40;
-	var pages = [];
-	var openPages = [];
-	var children = layout.childNodes;
-	for(var i = 0; i < children.length; i++){
-		var child = children[i];
-		if(child.nodeType == 1 && Outface._hasClass(child, "page")){
-			pages.push(child);
-			if(Outface._hasClass(child, "open") && !Outface._hasClass(child, "closing"))
-				openPages.push(child);
-		}
+Outface.page = {};
+Outface.page._open = function(section){
+	var fromLeft = false;
+	var siblings = section.parentNode.childNodes;
+	for(var i = siblings.length - 1; i > -1; i--){
+		var sibling = siblings[i];
+		if(sibling.nodeType == 1 && Outface._hasClass(sibling, "page"))
+			if(sibling == section)
+				break;
+			else if(Outface._hasClass(sibling, "open")){
+				fromLeft = true;
+				break;
+			}
 	}
-	
-	var maximiseCount = 0;
-	var idealMaximiseCount = layout.hasAttribute("maximise-count") ? parseInt(layout.hasAttribute("maximise-count")) : Math.ceil(layout.clientWidth / 600);
-	for(var i = 0; i < openPages.length; i++)
-		if(!Outface._hasClass(openPages[i], "minimise"))
-			maximiseCount++;
-	for(var t = 0; t < Outface._priority.length && maximiseCount > idealMaximiseCount; t++)
-		if(Outface._priority[t].parentNode == layout && !Outface._hasClass(Outface._priority[t], "minimise"))
-			if(Outface._hasClass(Outface._priority[t], "open") && !Outface._hasClass(Outface._priority[t], "closing")){
-				// Check if minimiseable
-				var minimiseable = false;
-				var children = Outface._priority[t].childNodes;
-				for(var k = 0; k < children.length; k++)
-					if(children[k].nodeType == 1 && Outface._hasClass(children[k], "tab")){
-						minimiseable = true;
-						break;
-					}
-				if(minimiseable){
-					Outface._addClass(Outface._priority[t], "minimise");
-					maximiseCount--;
-				}
+	var source = fromLeft ? -section.clientWidth : section.parentNode.clientWidth;
+	section.style.webkitTransform = section.style.transform = "translate3d(" + source + "px,0,0)";
+	section.style.webkitTransition = section.style.transition = "none";
+	section.offsetHeight;
+	section.style.webkitTransition = section.style.transition = "";
+	section.style.webkitTransform = section.style.transform = "translate3d(0,0,0)";
+};
+Outface.page._close = function(section){
+	var toLeft = true;
+	var siblings = section.parentNode.childNodes;
+	for(var i = 0; i < siblings.length; i++){
+		var sibling = siblings[i];
+		if(sibling.nodeType == 1 && Outface._hasClass(sibling, "page"))
+			if(sibling == section)
+				break;
+			else if(Outface._hasClass(sibling, "open")){
+				toLeft = false;
+				break;
 			}
-	for(var t = Outface._priority.length - 1; t > -1 && maximiseCount < idealMaximiseCount; t--)
-		if(Outface._priority[t].parentNode == layout && Outface._hasClass(Outface._priority[t], "minimise")){
-			Outface._removeClass(Outface._priority[t], "minimise");
-			maximiseCount++;
-		}
-	
-	var unweightedAggregateWidth = layout.clientWidth;
-	for(var i = 0; i < openPages.length; i++)
-		if(Outface._hasClass(openPages[i], "minimise"))
-			unweightedAggregateWidth -= minimiseWidth;
-		else if(openPages[i].hasAttribute("deckWeight"))
-			unweightedAggregateWidth -= parseFloat(openPages[i].getAttribute("deckWeight"));
-	var unweightedMaximiseCount = 0;
-	for(var i = 0; i < openPages.length; i++)
-		if(!Outface._hasClass(openPages[i], "minimise"))
-			if(!openPages[i].hasAttribute("deckWeight"))
-				unweightedMaximiseCount++;
-	if(unweightedMaximiseCount > 0)
-		var unweightedMaximiseWidth = unweightedAggregateWidth / unweightedMaximiseCount;
-	
-	var x = 0;
-	for(var i = 0; i < pages.length; i++){
-		var page = pages[i];
-		if(Outface._hasClass(page, "open")){
-			var width = 0;
-			if(page.hasAttribute("pageWeight")){
-				width = parseFloat(page.getAttribute("pageWeight"));
-				if(width > layout.clientWidth)
-					width = layout.clientWidth + "px";
-			}
-			else
-				width = unweightedMaximiseWidth;
-			page.style.width = Math.ceil(width) + "px";
-			if(Outface._hasClass(page, "minimise"))
-				width = minimiseWidth;
-			
-			var opensBefore = false;
-			for(var t = i - 1; t > -1; t--)
-				if(Outface._hasClass(pages[t], "open")){
-					opensBefore = true;
-					break;
-				}
-			if(!opensBefore){
-				var onlyOpen = true;
-				for(var t = 0; t < pages.length; t++)
-					if(Outface._hasClass(pages[t], "open") && pages[t] != page){
-						onlyOpen = false;
-						break;
-					}
-			}
-			if(page.outfacePageOpening === true){
-				delete page.outfacePageOpening;
-				var source = opensBefore == true || onlyOpen == true ? layout.clientWidth : -page.clientWidth;
-				page.style.webkitTransform = page.style.transform = "translate3d(" + source + "px,0,0)";
-				page.style.webkitTransition = page.style.transition = "none";
-				page.offsetHeight;
-				page.style.webkitTransition = page.style.transition = "";
-			}
-			else if(page.outfacePageClosing === true){
-				delete page.outfacePageClosing;
-				var destination = opensBefore == true || onlyOpen == true ? layout.clientWidth : -page.clientWidth;
-				page.style.webkitTransform = page.style.transform = "translate3d(" + destination + "px,0,0)";
-			}
-			if(!Outface._hasClass(page, "closing")){
-				page.style.webkitTransform = page.style.transform = "translate3d(" + x + "px,0,0)";
-				x += Math.floor(width);
-			}
-		}		
 	}
-	
-	// Cascade
-	for(var i = 0; i < layout.childNodes.length; i++)
-		if(layout.childNodes[i].nodeType == 1)
-			Outface._pageRefresh(layout.childNodes[i]);
+	var destination = toLeft ? -section.clientWidth : section.parentNode.clientWidth;
+	section.style.webkitTransform = section.style.transform = "translate3d(" + destination + "px,0,0)";
 };
-Outface._pageOpen = function(section){
-	var index = Outface._priority.indexOf(section);
-	if(index > -1)
-		Outface._priority.splice(index, 1);
-	Outface._priority.push(section);
-	
-	section.outfacePageOpening = true;
+Outface.page.open = function(section){
+	Outface._removeClass(section, Outface._getLayoutClass(section));
+	Outface._addClass(section, "page");
+	Outface.open(section);
 };
-Outface._pageClose = function(section){
-	var index = Outface._priority.indexOf(section);
-	if(index > -1)
-		Outface._priority.splice(index, 1);
-	Outface._priority.splice(0, 0, section);
-	
-	section.outfacePageClosing = true;
-};
-Outface.pageMinimise = function(section){
-	var index = Outface._priority.indexOf(section);
-	if(index > -1)
-		Outface._priority.splice(index, 1);
-	Outface._priority.splice(0, 0, section);
-	
-	Outface._addClass(section, "minimise");
-	Outface._pageRefresh(section.parentNode);
-};
-Outface.pageMaximise = function(section){
-	var index = Outface._priority.indexOf(section);
-	if(index > -1)
-		Outface._priority.splice(index, 1);
-	Outface._priority.push(section);
-	
-	Outface._removeClass(section, "minimise");
-	Outface._pageRefresh(section.parentNode);
+Outface.page.openX = function(section, data){
+	Outface._removeClass(section, Outface._getLayoutClass(section));
+	Outface._addClass(section, "page");
+	Outface.openX(section, data);
 };
 
 /* Prompt */
-Outface._promptOpen = function(section){
+Outface.prompt = {};
+Outface.prompt._open = function(section){
 	Outface._curtain(section);
 	section.style.marginTop = "-" + (section.clientHeight / 2) + "px";	
 	section.style.webkitTransform = section.style.transform = "translate3d(0,50px,0)";
@@ -684,11 +530,11 @@ Outface._promptOpen = function(section){
 	section.style.webkitTransform = section.style.transform = "";
 	section.style.opacity = "";
 };
-Outface._promptClose = function(section){
+Outface.prompt._close = function(section){
 	section.style.webkitTransform = section.style.transform = "translate3d(0,-50px,0)";
 	section.style.opacity = "0";
 };
-Outface.promptX = function(content, close, context, buttons){
+Outface.prompt.xbuild = function(content, close, context, buttons){
 	context = context != null ? context : document.body;
 	buttons = buttons != null ? buttons : [];
 	for(var i = 0; i < buttons.length; i++){
@@ -697,7 +543,7 @@ Outface.promptX = function(content, close, context, buttons){
 	}
 	
 	var section = document.createElement("section");
-	section.className = "prompt promptX primary shell ym modal";
+	section.className = "prompt prompt-x primary shell ym modal";
 	section.setAttribute("template", "");
 	section.innerHTML = "<div class='p1-2 xf'><div class='x1-1'></div><br/><div class='x1-1 xb'></div></div>";
 	section.getElementsByTagName("div")[1].appendChild(content);
@@ -720,14 +566,14 @@ Outface.promptX = function(content, close, context, buttons){
 	Outface.open(section);
 	return section;
 };
-Outface.alert = function(content, done, context, okContent){
+Outface.prompt.alert = function(content, done, context, okContent){
 	context = context != null ? context : document.body;
 	okContent = okContent != null ? okContent : "<i class='fa fa-check'></i> OK";
 	var p = document.createElement("p");
 	p.appendChild(document.createTextNode(content));
-	return Outface.promptX(p, done, context, [{ content:okContent, value:true }]);
+	return Outface.prompt.xbuild(p, done, context, [{ content:okContent, value:true }]);
 };
-Outface.confirm = function(content, done, context, buttons){
+Outface.prompt.confirm = function(content, done, context, buttons){
 	context = context != null ? context : document.body;
 	buttons = buttons != null ? buttons : [
 		{ className:"", content:"<i class='fa fa-times'></i> CANCEL", value:false },
@@ -735,42 +581,27 @@ Outface.confirm = function(content, done, context, buttons){
 	];
 	var p = document.createElement("p");
 	p.appendChild(document.createTextNode(content));
-	return Outface.promptX(p, done, context, buttons);
+	return Outface.prompt.xbuild(p, done, context, buttons);
 };
-Outface.promptLoad = function(context, content, onCancel){
-	context = context != null ? context : document.body;
-	content = content != null ? content : "Loading";
-	
-	var contentX = document.createElement("div");
-	contentX.innerHTML = "<p style='font-size:40px;'><i class='fa fa-cog fa-spin'></i></p><p></p>";
-	contentX.getElementsByTagName("p")[1].innerHTML = content;
-	
-	buttons = [];
-	if(onCancel != null)
-		buttons.push({ content:"<i class='fa fa-times'></i> CANCEL", value:false });
-	context.outfaceLoader = Outface.promptX(contentX, function(r){
-		if(r === false && onCancel)
-			onCancel();
-	}, context, buttons);
-	return context.outfaceLoader;
+Outface.prompt.open = function(section, data){
+	Outface._removeClass(section, Outface._getLayoutClass(section));
+	Outface._addClass(section, "prompt");
+	Outface.open(section, data);
 };
-Outface.promptLoaded = function(context){
-	if(!context.outfaceLoader)
-		return;
-	
-	setTimeout(function(){
-		context.outfaceLoader.addEventListener("closed", function(){ delete context.outfaceLoader; });
-		Outface.close(context.outfaceLoader);
-	}, 500);
-}
+Outface.prompt.openX = function(section, data){
+	Outface._removeClass(section, Outface._getLayoutClass(section));
+	Outface._addClass(section, "prompt");
+	Outface.openX(section, data);
+};
 
 /* Notification */
-Outface._notificationRefresh = function(layout, direction){
+Outface.notify = {};
+Outface.notify._refresh = function(layout, direction){
 	var notifications = [];
 	var children = layout.childNodes;
 	for(var i = 0; i < children.length; i++){
 		var child = children[i];
-		if(child.nodeType == 1 && Outface._hasClass(child, "notification") && (Outface._hasClass(child, "open") && !Outface._hasClass(child, "closing")))
+		if(child.nodeType == 1 && Outface._hasClass(child, "notify") && (Outface._hasClass(child, "open") && !Outface._hasClass(child, "closing")))
 			notifications.push(child);
 	}
 	var offset = 0;
@@ -780,7 +611,7 @@ Outface._notificationRefresh = function(layout, direction){
 		notification.style.webkitTransform = notification.style.transform = "translate3d(0,-" + offset + "px,0)";
 	}
 };
-Outface._notificationOpen = function(section, data){
+Outface.notify._open = function(section, data){
 	section.style.webkitTransform = section.style.transform = "translate3d(0,0,0)";
 	section.style.webkitTransition = section.style.transition = "none";
 	section.offsetHeight;
@@ -790,12 +621,12 @@ Outface._notificationOpen = function(section, data){
 			Outface.close(section, data);
 		}, section.getAttribute("timeout") * 1000);
 };
-Outface._notificationClose = function(section, data){
+Outface.notify._close = function(section, data){
 	clearTimeout(section.timeoutTimeout);
 	delete section.timeoutTimeout;
 	section.style.webkitTransform = section.style.transform = "translate3d(0,100%,0)";	
 };
-Outface.notificationX = function(content, close, context, buttons, timeout){
+Outface.notify.xbuild = function(content, close, context, buttons, timeout){
 	context = context != null ? context : document.body;
 	timeout = timeout != null ? timeout : 3;
 	buttons = buttons != null ? buttons : [];
@@ -803,7 +634,7 @@ Outface.notificationX = function(content, close, context, buttons, timeout){
 		buttons[i].icon = buttons[i].icon != null ? buttons[i].icon : "arrow-right";
 		
 	var section = document.createElement("section");
-	section.className = "notification notificationX primary shell xf ym close";
+	section.className = "notify notify-x primary shell xf ym close";
 	section.setAttribute("template", timeout);
 	section.setAttribute("timeout", timeout);
 	if(buttons.length > 0){
@@ -835,20 +666,20 @@ Outface.notificationX = function(content, close, context, buttons, timeout){
 	Outface.open(section);
 	return section;
 };
-Outface.notificationAlert = function(content, done, context, okIcon){
+Outface.notify.alert = function(content, done, context, okIcon){
 	context = context != null ? context : document.body;
 	var p = document.createElement("p");
 	p.innerHTML = content;
-	return Outface.notificationX(p, done, context);
+	return Outface.notify.xbuild(p, done, context);
 };
-Outface.notificationShortcut = function(content, done, context, okIcon){
+Outface.notify.shortcut = function(content, done, context, okIcon){
 	context = context != null ? context : document.body;
 	okIcon = okIcon != null ? okIcon : "arrow-right";
 	var p = document.createElement("p");
 	p.innerHTML = content;
-	return Outface.notificationX(p, done, context, [{ icon:okIcon, value:true }]);
+	return Outface.notify.xbuild(p, done, context, [{ icon:okIcon, value:true }]);
 };
-Outface.notificationConfirm = function(content, done, context, buttons){
+Outface.notify.confirm = function(content, done, context, buttons){
 	context = context != null ? context : document.body;
 	buttons = buttons != null ? buttons : [
 		{ icon:"times", value:false },
@@ -856,11 +687,22 @@ Outface.notificationConfirm = function(content, done, context, buttons){
 	];
 	var p = document.createElement("p");
 	p.innerHTML = content;
-	return Outface.notificationX(p, done, context, buttons, 0);
+	return Outface.notify.xbuild(p, done, context, buttons, 0);
+};
+Outface.notify.open = function(section, data){
+	Outface._removeClass(section, Outface._getLayoutClass(section));
+	Outface._addClass(section, "notify");
+	Outface.open(section, data);
+};
+Outface.notify.openX = function(section, data){
+	Outface._removeClass(section, Outface._getLayoutClass(section));
+	Outface._addClass(section, "notify");
+	Outface.openX(section, data);
 };
 
 /* Dialog */
-Outface._dialogOpen = function(section, data){
+Outface.dialog = {};
+Outface.dialog._open = function(section, data){
 	Outface._curtain(section);
 	if(Outface._hasClass(section, "dialog-left")) 
 		section.style.webkitTransform = section.style.transform = "translate3d(-100%,0,0)"; 
@@ -875,7 +717,7 @@ Outface._dialogOpen = function(section, data){
 	section.style.webkitTransform = section.style.transform = "";
 	section.style.webkitTransition = section.style.transition = "";
 };
-Outface._dialogClose = function(section, data){
+Outface.dialog._close = function(section, data){
 	if(Outface._hasClass(section, "dialog-left")) 
 		section.style.webkitTransform = section.style.transform = "translate3d(-200%,0,0)"; 
 	else if(Outface._hasClass(section, "dialog-right")) 
@@ -885,31 +727,42 @@ Outface._dialogClose = function(section, data){
 	else 
 		section.style.webkitTransform = section.style.transform = "translate3d(0,200%,0)"; 
 };
+Outface.dialog.open = function(section, data){
+	Outface._removeClass(section, Outface._getLayoutClass(section));
+	Outface._addClass(section, "dialog");
+	Outface.open(section, data);
+};
+Outface.dialog.openX = function(section, data){
+	Outface._removeClass(section, Outface._getLayoutClass(section));
+	Outface._addClass(section, "dialog");
+	Outface.openX(section, data);
+};
 
 /* Menu */
-Outface.menuClear = function(menu){
+Outface.menu = {};
+Outface.menu.clear = function(menu){
 	var menuitems = menu.childNodes;
 	for(var i = 0; i < menu.childNodes.length; i++)
 		if(menu.childNodes[i].nodeType == 1)
-			Outface.menuitemDeselect(menu.childNodes[i]);
+			Outface.menu.deselect(menu.childNodes[i]);
 };
-Outface.menuitemSelect = function(menuitem){
+Outface.menu.select = function(menuitem){
 	Outface._addClass(menuitem, "select");
 };
-Outface.menuitemSelectClear = function(menuitem){
-	Outface.menuClear(menuitem.parentNode);
+Outface.menu.selectX = function(menuitem){
+	Outface.menu.clear(menuitem.parentNode);
 	Outface._addClass(menuitem, "select");
 };
-Outface.menuitemDeselect = function(menuitem){
+Outface.menu.deselect = function(menuitem){
 	Outface._removeClass(menuitem, "select");
 };
-Outface.menuitemToggle = function(menuitem){
+Outface.menu.toggle = function(menuitem){
 	if(Outface._hasClass(menuitem, "select"))
 		Outface._removeClass(menuitem, "select");
 	else
 		Outface._addClass(menuitem, "select");
 };
-Outface.bind = function(menuitem, section){
+Outface.menu.bind = function(menuitem, section){
 	section.addEventListener("open", function(){
 		Outface.menuitemSelect(menuitem);
 	});
@@ -920,61 +773,139 @@ Outface.bind = function(menuitem, section){
 };
 
 /* Load */
-Outface.loadIcon = function(element){
-	element.disabled = true;
+Outface.load = {};
+Outface.load.start = function(element){
+	if(element.tagName == "BUTTON"){
+		element.disabled = true;
 	
-	var icon = element.getElementsByTagName("i")[0];
-	if(icon == null)
-		return;
-	
-	Outface._addClass(element, "load");
-	element.oIconClassName = icon.className;
-	icon.className = "fa fa-cog fa-spin load";
-};
-Outface.loadedIcon = function(element){
-	element.disabled = false;
-	
-	var icon = element.getElementsByTagName("i")[0];
-	if(icon == null)
-		return;
-	
-	Outface._removeClass(element, "load")
-	icon.className = element.oIconClassName;
-	delete element.oIconClassName;
-};
-Outface.load = function(element){
-	if(element.outfaceLoad != null)
-		return;
-	var load = document.createElement("div");
-	load.className = "load-cover";
-	load.innerHTML = "<p><i class='fa fa-cog fa-spin'></i></p>";
-	element.appendChild(load);
-	element.outfaceLoad = load;
-	load.style.opacity = "1";
-	load.style.webkitTransition = load.style.transition = "none";
-	load.offsetHeight;
-	load.style.opacity = "";
-	load.style.webkitTransition = load.style.transition = "";
-};
-Outface.loaded = function(element){
-	element.outfaceLoad.style.opacity = "0";
-	
-	element.removeEventListener("transitionend", element.loadTransitionend);
-	clearTimeout(element.loadTransitionendTimeout);
-	element.loadTransitionend = function(e){
-		if(e.target != element)
+		var icon = element.getElementsByTagName("i")[0];
+		if(icon == null)
 			return;
+	
+		Outface._addClass(element, "load");
+		element.oIconClassName = icon.className;
+		icon.className = "fa fa-cog fa-spin load";
+	}
+	else{
+		if(element.outfaceLoad != null)
+			return;
+		var load = document.createElement("div");
+		load.className = "load-cover";
+		load.innerHTML = "<p><i class='fa fa-cog fa-spin'></i></p>";
+		element.appendChild(load);
+		element.outfaceLoad = load;
+		load.style.opacity = "1";
+		load.style.webkitTransition = load.style.transition = "none";
+		load.offsetHeight;
+		load.style.opacity = "";
+		load.style.webkitTransition = load.style.transition = "";
+	}
+};
+Outface.load.stop = function(element){
+	if(element.tagName == "BUTTON"){
+		element.disabled = false;
+	
+		var icon = element.getElementsByTagName("i")[0];
+		if(icon == null)
+			return;
+	
+		Outface._removeClass(element, "load")
+		icon.className = element.oIconClassName;
+		delete element.oIconClassName;
+	}
+	else{
+		element.outfaceLoad.style.opacity = "0";
+	
 		element.removeEventListener("transitionend", element.loadTransitionend);
-		delete element.loadTransitionend;
 		clearTimeout(element.loadTransitionendTimeout);
-		delete element.loadTransitionendTimeout;
+		element.loadTransitionend = function(e){
+			if(e.target != element)
+				return;
+			element.removeEventListener("transitionend", element.loadTransitionend);
+			delete element.loadTransitionend;
+			clearTimeout(element.loadTransitionendTimeout);
+			delete element.loadTransitionendTimeout;
 
-		element.removeEventListener("closed", closed);
-		element.removeChild(element.outfaceLoad);
-		delete element.outfaceLoad;
-	};
-	element.addEventListener("transitionend", element.loadTransitionend);
-	element.loadTransitionendTimeout = setTimeout(function(){ element.loadTransitionend({ target:element }); }, 500);
+			element.removeEventListener("closed", closed);
+			element.removeChild(element.outfaceLoad);
+			delete element.outfaceLoad;
+		};
+		element.addEventListener("transitionend", element.loadTransitionend);
+		element.loadTransitionendTimeout = setTimeout(function(){ element.loadTransitionend({ target:element }); }, 500);
+	}
+};
+
+/* History */
+Outface.history = {};
+Outface.history._init = function(context){
+	context.history = {};
+	context.history._array = [];
+	context.history.index = -1;
+	context.history.backable = false;
+	context.history.forwardable = false;
+	context.history.length = 0;
+};
+Outface.history.pushState = function(context, state){
+	if(context.history == null)
+		Outface.history._init(context);
+	context.history.index++;
+	context.history._array.splice(context.history.index, 0, state);
+	context.history._array.splice(context.history.index + 1, context.history._array.length - context.history.index - 1);
+	Outface.history._refresh(context);
+};
+Outface.history._refresh = function(context){
+	context.history.length = context.history._array.length;
+	context.history.backable = context.history.index > 0;
+	context.history.forwardable = context.history.index < context.history.length - 1;
+	context.dispatchEvent(new CustomEvent("outface-history"));
+};
+Outface.history.goto = function(context, index){
+	var direction = index > context.history.index ? 1 : -1;
+	var currentState = context.history._array[context.history.index];
+	var nextState = context.history._array[index];
+	
+	var closes = [];
+	var opens = [];
+	if(direction < 0)
+		for(var i = 0; i < currentState.length; i++)
+			if(currentState[i].action == "open")
+				closes.push(currentState[i]);
+	for(var i = 0; i < nextState.length; i++)
+		if(nextState[i].action == "open")
+			opens.push(nextState[i]);
+		else if(nextState[i].action == "close")
+			closes.push(nextState[i]);
+	
+	for(var i = 0; i < opens.length; i++)
+		if(opens[i].section.template != null){
+			var clone = Outface.clone(opens[i].section.template, opens[i].section.data);
+			opens[i].section = clone;
+			Outface._open(clone);
+		}
+		else
+			Outface._open(opens[i].section, opens[i].data);
+	for(var i = 0; i < closes.length; i++)
+		Outface._close(closes[i].section, closes[i].data);
+		
+	context.history.index = index;
+	Outface.history._refresh(context);
+	return index > 0 && index < context.history.length;
+};
+Outface.history.clear = function(context){
+	Outface.history._init(context);
+	context.dispatchEvent(new CustomEvent("outface-history"));
+};
+Outface.history.go = function(context, change){
+	return Outface.history.goto(context, context.history.index + change);
+};
+Outface.history.back = function(context){
+	return Outface.history.go(context, -1);
+};
+Outface.history.forward = function(context){
+	return Outface.history.go(context, 1);
+};
+Outface.history.home = function(context){
+	return Outface.history.goto(context, 0);
 };
 
 window.addEventListener("load", function(){
@@ -990,4 +921,3 @@ window.addEventListener("load", function(){
 		e.preventDefault();
 	});
 });
-window.addEventListener("resize", function(){ Outface._pageRefresh(document.body); });
