@@ -741,33 +741,33 @@ Outface.dialog.openX = function(section, data){
 /* Menu */
 Outface.menu = {};
 Outface.menu.clear = function(menu){
-	var menuitems = menu.childNodes;
+	var items = menu.childNodes;
 	for(var i = 0; i < menu.childNodes.length; i++)
 		if(menu.childNodes[i].nodeType == 1)
 			Outface.menu.deselect(menu.childNodes[i]);
 };
-Outface.menu.select = function(menuitem){
-	Outface._addClass(menuitem, "select");
+Outface.menu.select = function(item){
+	Outface._addClass(item, "select");
 };
-Outface.menu.selectX = function(menuitem){
-	Outface.menu.clear(menuitem.parentNode);
-	Outface._addClass(menuitem, "select");
+Outface.menu.selectX = function(item){
+	Outface.menu.clear(item.parentNode);
+	Outface._addClass(item, "select");
 };
-Outface.menu.deselect = function(menuitem){
-	Outface._removeClass(menuitem, "select");
+Outface.menu.deselect = function(item){
+	Outface._removeClass(item, "select");
 };
-Outface.menu.toggle = function(menuitem){
-	if(Outface._hasClass(menuitem, "select"))
-		Outface._removeClass(menuitem, "select");
+Outface.menu.toggle = function(item){
+	if(Outface._hasClass(item, "select"))
+		Outface._removeClass(item, "select");
 	else
-		Outface._addClass(menuitem, "select");
+		Outface._addClass(item, "select");
 };
-Outface.menu.bind = function(menuitem, section){
+Outface.menu.bind = function(item, section){
 	section.addEventListener("open", function(){
-		Outface.menuitemSelect(menuitem);
+		Outface.menu.select(item);
 	});
 	section.addEventListener("close", function(){
-		Outface.menuitemDeselect(menuitem);
+		Outface.menu.deselect(item);
 	});
 	return section;
 };
