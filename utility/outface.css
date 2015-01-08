@@ -317,7 +317,7 @@ sup{ font-size:.7em; vertical-align:super; }
 }
 
 /* Section */
-.page,.prompt,.notification,.dialog{ display:none; z-index:1; overflow:hidden; }
+.page,.prompt,.notify,.dialog{ display:none; z-index:1; overflow:hidden; }
 
 .open{ display:block; }
 .flex.open{ display:-webkit-inline-box;display:-ms-inline-flexbox;display:-webkit-inline-flex;display:inline-flex; -webkit-box-orient:vertical;-ms-flex-direction:column;-webkit-flex-direction:column; }
@@ -332,18 +332,11 @@ sup{ font-size:.7em; vertical-align:super; }
 /* Prompt */
 .prompt{ position:absolute; top:50%; width:100%; left:0; max-height:100%; z-index:1; -webkit-transition:opacity .25s,-webkit-transform .25s;transition:opacity .25s,transform .25s; }
 
-/* Desk */
+/* Page */
 .page{ position:absolute; left:0; top:0; bottom:0; right:0; -webkit-transition:-webkit-transform .5s,opacity .5s;transition:transform .5s,opacity .5s; }
 
-/* Desk Tab */
-.page>.tab{ position:absolute; left:0; top:0; right:0; bottom:0; -webkit-transition:opacity .5s;transition:opacity .5s; opacity:0; cursor:pointer; z-index:1; visibility:hidden; border-left:solid 1px rgba(255,255,255,.25); }
-.page>.tab h5{ position:absolute; left:5px; bottom:5px; color:rgba(255,255,255,.87); -webkit-transform-origin:left top;transform-origin:left top; -webkit-transform:rotate(-90deg);transform:rotate(-90deg); }
-.page.minimise>.tab{ visibility:visible; opacity:1; }
-/* Shades */
-.page>.tab:active{ background-color:rgb(33,33,33); }
-
-/* Notifications */
-.notification{ position:absolute; left:0; top:100%; right:0; -webkit-transition:-webkit-transform .5s,opacity .5s;transition:transform .5s,opacity .5s; }
+/* Notifies */
+.notify{ position:absolute; left:0; top:100%; right:0; -webkit-transition:-webkit-transform .5s,opacity .5s;transition:transform .5s,opacity .5s; }
 
 /* Curtain */
 .curtain{ position:absolute; left:0; top:0; right:0; bottom:0; text-align:center; -webkit-transition:opacity .5s;transition:opacity .5s; background-color:#000; opacity:.75; z-index:1; }
@@ -366,12 +359,12 @@ sup{ font-size:.7em; vertical-align:super; }
 .cx{ padding:0 5px 0 5px; }
 .cy{ padding:5px 0 5px 0; }
 
-/* PromptX */
-.promptX{ padding:30px; }
+/* Prompt-X */
+.prompt-x{ padding:30px; }
 
-/* NotificationX */
-.notificationX{ padding:10px; }
-.notificationX p{ font-size:15px; }
+/* Notify-X */
+.notify-x{ padding:10px; }
+.notify-x p{ font-size:15px; }
 
 /* Upbrowse */
 .upbrowse{ position:fixed; left:0; right:0; top:50%; padding:20px 0 20px 0; z-index:2147483647; vertical-align:middle; cursor:pointer; -webkit-transition:opacity .25s;transition:opacity .25s; background-color:#FFD54F; overflow:hidden; }
