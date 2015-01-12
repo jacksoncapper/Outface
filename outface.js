@@ -18,7 +18,8 @@ var metas = [
 	{ tag:"meta", name:"mobile-web-app-capable", content:"yes" },
 	{ tag:"script", src:outfacePath + "/utility/fastclick1.0.3.js" },
 	{ tag:"script", src:outfacePath + "/utility/bowser0.7.2.js" },
-	{ tag:"script", src:outfacePath + "/utility/iscroll5.1.3.js" }
+	{ tag:"script", src:outfacePath + "/utility/iscroll5.1.3.js" },
+	{ tag:"script", src:outfacePath + "/utility/ckeditor/ckeditor.js" }
 ];
 for(var i = 0; i < metas.length; i++) try{
 	var meta = document.createElement(metas[i].tag);
