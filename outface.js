@@ -211,13 +211,6 @@ Outface.register = function(element, context, data){
 	if(element.hasAttribute("template"))
 		return;
 	
-	if(element.register != null){
-		element.registerx = element.register;
-		element.register = null;
-		element.registerx(data);
-		element.registerx = null;
-	}
-	
 	if(context == null){
 		var context = element.tagName != "BODY" ? element.parentNode : element;
 		while(context != null && context.tagName != "SECTION" && context.tagName != "BODY")
@@ -235,6 +228,13 @@ Outface.register = function(element, context, data){
 				context[child.getAttribute("name")] = child;
 			Outface.register(child, child.tagName != "SECTION" ? context : child, data);
 		}
+		
+	if(element.register != null){
+		element.registerx = element.register;
+		element.register = null;
+		element.registerx(data);
+		element.registerx = null;
+	}
 	
 	// iScroll
 	if(Outface._hasClass(element, "scroll") || Outface._hasClass(element, "scroll-x") || Outface._hasClass(element, "scroll-y")){
