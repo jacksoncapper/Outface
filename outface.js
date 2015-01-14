@@ -211,9 +211,16 @@ Outface.register = function(element, context, data){
 	if(element.hasAttribute("template"))
 		return;
 	
+	if(element.register != null){
+		element.registerx = element.register;
+		element.register = null;
+		element.registerx(data);
+		element.registerx = null;
+	}
+	
 	if(context == null){
 		var context = element.tagName != "BODY" ? element.parentNode : element;
-		while(context.tagName != "SECTION" && context.tagName != "BODY")
+		while(context != null && context.tagName != "SECTION" && context.tagName != "BODY")
 			context = context.parentNode;
 		if(element.tagName == "SECTION"){
 			element.context = context;
@@ -228,12 +235,6 @@ Outface.register = function(element, context, data){
 				context[child.getAttribute("name")] = child;
 			Outface.register(child, child.tagName != "SECTION" ? context : child, data);
 		}
-	if(element.register != null){
-		element.registerx = element.register;
-		element.register = null;
-		element.registerx(data);
-		element.registerx = null;
-	}
 	
 	// iScroll
 	if(Outface._hasClass(element, "scroll") || Outface._hasClass(element, "scroll-x") || Outface._hasClass(element, "scroll-y")){
@@ -260,38 +261,13 @@ Outface.register = function(element, context, data){
 		else
 			setTimeout(function(){ element.iscroll.refresh(); }, 250);
 	}
-	
-	// CKEditor
-	if(Outface._hasClass(element, "richedit") && element.ckeditor == null){
-		element.setAttribute("contenteditable", "true");
-		element.ckeditor = CKEDITOR.inline(element, {
-			allowedContent: true,
-			toolbar:[
-				['Format','Bold','Italic','Underline','StrikeThrough','-','Outdent','Indent'],
-				['NumberedList','BulletedList','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-				['Image','-','Link','Source']
-			]
-		});
-		element.ondrop = function(event){
-			event.preventDefault && event.preventDefault();
-			var reader = new FileReader();
-			reader.onloadend = function(e){
-				var temp = document.createElement("div");
-				var img = document.createElement("img");
-				img.src = e.target.result;
-				temp.appendChild(img);
-				document.execCommand("insertHTML", true, "<p>" + temp.innerHTML + "</p>");
-		    };
-			reader.readAsDataURL(event.dataTransfer.files[0]);
-			return false;
-		};
-	}
 };
 Outface.clone = function(template, data){
 	var clone = template.cloneNode(true);
 	clone.template = template;
 	clone.data = data;
-	template.parentNode.insertBefore(clone, template);
+	if(template.parentNode != null)
+		template.parentNode.insertBefore(clone, template);
 	clone.removeAttribute("id");
 	clone.removeAttribute("name");
 	clone.removeAttribute("template");
@@ -569,7 +545,7 @@ Outface.prompt.xbuild = function(content, close, context, buttons){
 	}
 	
 	var section = document.createElement("section");
-	section.className = "prompt prompt-x prime shell ym modal";
+	section.className = "prompt prompt-x primary shell ym modal";
 	section.setAttribute("template", "");
 	section.innerHTML = "<div class='p1-2 xf'><div class='x1-1'></div><br/><div class='x1-1 xb'></div></div>";
 	section.getElementsByTagName("div")[1].appendChild(content);
@@ -660,7 +636,7 @@ Outface.notify.xbuild = function(content, close, context, buttons, timeout){
 		buttons[i].icon = buttons[i].icon != null ? buttons[i].icon : "arrow-right";
 		
 	var section = document.createElement("section");
-	section.className = "notify notify-x prime shell xf ym close";
+	section.className = "notify notify-x primary shell xf ym close";
 	section.setAttribute("template", timeout);
 	section.setAttribute("timeout", timeout);
 	if(buttons.length > 0){
@@ -767,33 +743,33 @@ Outface.dialog.openX = function(section, data){
 /* Menu */
 Outface.menu = {};
 Outface.menu.clear = function(menu){
-	var items = menu.childNodes;
+	var menuitems = menu.childNodes;
 	for(var i = 0; i < menu.childNodes.length; i++)
 		if(menu.childNodes[i].nodeType == 1)
 			Outface.menu.deselect(menu.childNodes[i]);
 };
-Outface.menu.select = function(item){
-	Outface._addClass(item, "select");
+Outface.menu.select = function(menuitem){
+	Outface._addClass(menuitem, "select");
 };
-Outface.menu.selectX = function(item){
-	Outface.menu.clear(item.parentNode);
-	Outface._addClass(item, "select");
+Outface.menu.selectX = function(menuitem){
+	Outface.menu.clear(menuitem.parentNode);
+	Outface._addClass(menuitem, "select");
 };
-Outface.menu.deselect = function(item){
-	Outface._removeClass(item, "select");
+Outface.menu.deselect = function(menuitem){
+	Outface._removeClass(menuitem, "select");
 };
-Outface.menu.toggle = function(item){
-	if(Outface._hasClass(item, "select"))
-		Outface._removeClass(item, "select");
+Outface.menu.toggle = function(menuitem){
+	if(Outface._hasClass(menuitem, "select"))
+		Outface._removeClass(menuitem, "select");
 	else
-		Outface._addClass(item, "select");
+		Outface._addClass(menuitem, "select");
 };
-Outface.menu.bind = function(item, section){
+Outface.menu.bind = function(menuitem, section){
 	section.addEventListener("open", function(){
-		Outface.menu.select(item);
+		Outface.menuitemSelect(menuitem);
 	});
 	section.addEventListener("close", function(){
-		Outface.menu.deselect(item);
+		Outface.menuitemDeselect(menuitem);
 	});
 	return section;
 };
