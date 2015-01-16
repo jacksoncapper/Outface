@@ -545,7 +545,7 @@ Outface.prompt.xbuild = function(content, close, context, buttons){
 	}
 	
 	var section = document.createElement("section");
-	section.className = "prompt prompt-x primary shell ym modal";
+	section.className = "prompt prompt-x prime shell ym modal";
 	section.setAttribute("template", "");
 	section.innerHTML = "<div class='p1-2 xf'><div class='x1-1'></div><br/><div class='x1-1 xb'></div></div>";
 	section.getElementsByTagName("div")[1].appendChild(content);
@@ -636,7 +636,7 @@ Outface.notify.xbuild = function(content, close, context, buttons, timeout){
 		buttons[i].icon = buttons[i].icon != null ? buttons[i].icon : "arrow-right";
 		
 	var section = document.createElement("section");
-	section.className = "notify notify-x primary shell xf ym close";
+	section.className = "notify notify-x prime shell xf ym close";
 	section.setAttribute("template", timeout);
 	section.setAttribute("timeout", timeout);
 	if(buttons.length > 0){
