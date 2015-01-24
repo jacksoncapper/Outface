@@ -766,10 +766,10 @@ Outface.menu.toggle = function(menuitem){
 };
 Outface.menu.bind = function(menuitem, section){
 	section.addEventListener("open", function(){
-		Outface.menuitemSelect(menuitem);
+		Outface.menu.select(menuitem);
 	});
 	section.addEventListener("close", function(){
-		Outface.menuitemDeselect(menuitem);
+		Outface.menu.deselect(menuitem);
 	});
 	return section;
 };
