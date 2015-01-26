@@ -102,7 +102,7 @@ select{ display:inline-block;*display:inline;zoom:1; width:98%;width:calc(100% -
 .richedit{ border-top:solid 5px rgb(222,222,222); border-bottom:solid 5px rgb(222,222,222); font-size:16px; }
 /* Shades */
 input[type=text],input[type=email],input[type=password],input[type=number],input[type=datetime],input[type=date],input[type=time],textarea,select{ color:rgb(66,66,66); background-color:rgb(222,222,222); }
-.shell input[type=text],.shell input[type=email],.shell input[type=password],.shell input[type=number],.shell input[type=datetime],.shell input[type=date],.shell input[type=time],.shell textarea,.shell select{ border-bottom:solid 1px #FFF; padding-left:0; padding-right:0; background-color:Transparent; color:#FFF; }
+.shell input[type=text],.shell input[type=email],.shell input[type=password],.shell input[type=number],.shell input[type=datetime],.shell input[type=date],.shell input[type=time],.shell textarea,.shell select{ background-color:rgba(255,255,255,.54); color:rgb(33,33,33); }
 
 /* Button */
 button{ display:inline-block;*display:inline;zoom:1; margin:1%;margin:calc(5px); padding:8px 25px 8px 25px; font-size:14px; font-weight:bold; line-height:1.4em; text-align:center; text-transform:uppercase; cursor:pointer; -webkit-transition:background-color .25s,border-color .25s,color .25s,-webkit-transform .25s;transition:background-color .25s,border-color .25s,color .25s,transform .25s; border-radius:5em; line-height:1em; }
@@ -155,14 +155,14 @@ button.icon:active{ background-color:Transparent; }
 .shell button.icon:active,.shell button.icon.load{ background-color:Transparent; border:none; }
 
 /* Primary Button */
-button.primary{ font-size:24px; width:1.8em; height:1.8em; line-height:1.9em; padding:0; border-radius:1em; }
+button.primary{ font-size:24px; width:1.8em; height:1.8em; line-height:2.0em; padding:0; border-radius:1em; }
 /* Shades */
 button.primary:active{ border-color:rgb(66,66,66); background-color:rgb(66,66,66); color:#FFF; }
 .shell button.primary{ background-color:Transparent; }
 .shell button.primary:active,.shell button.primary.load{ border-color:#FFF; background-color:#FFF; color:#000; }
 
 /* Control Button */
-button.control{ border-radius:1em; font-size:19px; width:1.8em; height:1.8em; line-height:1.7em; padding:0; background-color:Transparent; }
+button.control{ border-radius:1em; font-size:19px; width:1.8em; height:1.8em; line-height:1.9em; padding:0; background-color:Transparent; }
 /* Shades */
 button.control:active,button.control.load{ border-color:rgb(66,66,66); background-color:rgb(66,66,66); color:#FFF; }
 .shell button.control{ background-color:Transparent; border-color:#FFF; color:#FFF; }
