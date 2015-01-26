@@ -184,11 +184,6 @@ Outface._close = function(section, data){
 		Outface._removeClass(section, "closing");
 		
 		Outface._event(section, "closed", data);
-
-		if(section.hasAttribute("templated")){
-			section.parentNode.removeChild(section);
-			Outface._event(section, "unregister", data);
-		}
 	};
 	section.addEventListener("transitionend", section.transitionend);
 	section.transitionendTimeout = setTimeout(function(){ section.transitionend({ target:section }); }, 1000);
@@ -264,10 +259,6 @@ Outface.register = function(element, context, data){
 };
 Outface.clone = function(template, data){
 	var clone = template.cloneNode(true);
-	clone.template = template;
-	clone.data = data;
-	if(template.parentNode != null)
-		template.parentNode.insertBefore(clone, template);
 	clone.removeAttribute("id");
 	clone.removeAttribute("name");
 	clone.removeAttribute("template");
@@ -277,6 +268,8 @@ Outface.clone = function(template, data){
 	var cloneElements = clone.getElementsByTagName("*");
 	for(var i = 0; i < cloneElements.length; i++)
 		cloneElements[i].register = elements[i].register;
+	if(template.parentNode != null)
+		template.parentNode.insertBefore(clone, template);
 	Outface.register(clone, null, data);
 	return clone;
 };
@@ -842,18 +835,10 @@ Outface.history = {};
 Outface.history._init = function(context){
 	context.history = {};
 	context.history._array = [];
-	context.history.index = -1;
+	context.history.index = null;
 	context.history.backable = false;
 	context.history.forwardable = false;
 	context.history.length = 0;
-};
-Outface.history.pushState = function(context, state){
-	if(context.history == null)
-		Outface.history._init(context);
-	context.history.index++;
-	context.history._array.splice(context.history.index, 0, state);
-	context.history._array.splice(context.history.index + 1, context.history._array.length - context.history.index - 1);
-	Outface.history._refresh(context);
 };
 Outface.history._refresh = function(context){
 	context.history.length = context.history._array.length;
@@ -861,7 +846,35 @@ Outface.history._refresh = function(context){
 	context.history.forwardable = context.history.index < context.history.length - 1;
 	context.dispatchEvent(new CustomEvent("outface-history"));
 };
-Outface.history.goto = function(context, index){
+Outface.history._clear = function(context){
+	var index = context.history.index + 1;
+	var savedReferences = [];
+	for(var i = 0; i < index && i < context.history._array.length; i++)
+		for(var t = 0; t < context.history._array[i].length; t++){
+			var section = context.history._array[i][t].section;
+			if(section.hasAttribute("templated"))
+				savedReferences.push(section);
+		}
+	for(var i = index; i < context.history._array.length; i++)
+		for(var t = 0; t < context.history._array[i].length; t++){
+			var section = context.history._array[i][t].section;
+			if(section.hasAttribute("templated"))
+				if(savedReferences.indexOf(section) < 0){
+					if(Outface._hasClass(section, "open"))
+						section.addEventListener("closed", function(e){
+							this.parentNode.removeChild(this);
+							Outface._event(this, "unregister");
+						});
+					else{
+						section.parentNode.removeChild(section);
+						Outface._event(section, "unregister");
+					}
+					savedReferences.push(section);
+				}
+		}
+	context.history._array.splice(index, context.history._array.length);
+};
+Outface.history._goto = function(context, index){
 	var direction = index > context.history.index ? 1 : -1;
 	var currentState = context.history._array[context.history.index];
 	var nextState = context.history._array[index];
@@ -879,23 +892,35 @@ Outface.history.goto = function(context, index){
 			closes.push(nextState[i]);
 	
 	for(var i = 0; i < opens.length; i++)
-		if(opens[i].section.template != null){
-			var clone = Outface.clone(opens[i].section.template, opens[i].section.data);
-			opens[i].section = clone;
-			Outface._open(clone);
-		}
-		else
-			Outface._open(opens[i].section, opens[i].data);
+		Outface._open(opens[i].section, opens[i].data);
 	for(var i = 0; i < closes.length; i++)
 		Outface._close(closes[i].section, closes[i].data);
-		
 	context.history.index = index;
-	Outface.history._refresh(context);
 	return index > 0 && index < context.history.length;
 };
+Outface.history.pushState = function(context, state){
+	if(context.history == null)
+		Outface.history._init(context);
+	context.history.index = context.history.index != null ? context.history.index : 0;
+	Outface.history._clear(context);
+	context.history._array.push(state);
+	context.history.index = context.history._array.length - 1;
+	Outface.history._refresh(context);
+};
 Outface.history.clear = function(context){
-	Outface.history._init(context);
-	context.dispatchEvent(new CustomEvent("outface-history"));
+	Outface.history._clear(context);
+	Outface.history._refresh(context);
+};
+Outface.history.goto = function(context, index){
+	var r = Outface.history._goto(context, index);
+	Outface.history._refresh(context);
+	return r;
+};
+Outface.history.home = function(context){
+	var r = Outface.history._goto(context, 0);
+	Outface.history._clear(context);
+	Outface.history._refresh(context);
+	return r;
 };
 Outface.history.go = function(context, change){
 	return Outface.history.goto(context, context.history.index + change);
@@ -905,9 +930,6 @@ Outface.history.back = function(context){
 };
 Outface.history.forward = function(context){
 	return Outface.history.go(context, 1);
-};
-Outface.history.home = function(context){
-	return Outface.history.goto(context, 0);
 };
 
 window.addEventListener("load", function(){
