@@ -324,10 +324,10 @@ sup{ font-size:.7em; vertical-align:super; }
 
 /* Dialog */
 .dialog{ position:absolute; left:20px; top:0; right:20px; bottom:0; margin:auto; width:auto; opacity:1; -webkit-transition:opacity .5s,-webkit-transform .5s;transition:opacity .5s,transform .5s; }
-.dialog-top{ left:20px; top:0; right:20px; bottom:0; }
-.dialog-right{ left:auto; top:0; right:0; bottom:0; }
-.dialog-bottom{ left:20px; top:0; right:20px; bottom:0; }
-.dialog-left{ left:0; top:0; right:auto; bottom:0; }
+.dialog-top{ left:20px; top:0; right:20px; bottom:0; width:100%; }
+.dialog-right{ left:auto; top:0; right:0; bottom:0; width:100%; }
+.dialog-bottom{ left:20px; top:0; right:20px; bottom:0; width:100%; }
+.dialog-left{ left:0; top:0; right:auto; bottom:0; width:100%; }
 
 /* Prompt */
 .prompt{ position:absolute; top:50%; width:100%; left:0; max-height:100%; z-index:1; -webkit-transition:opacity .25s,-webkit-transform .25s;transition:opacity .25s,transform .25s; }
