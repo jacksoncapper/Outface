@@ -607,10 +607,11 @@ Outface.notify._refresh = function(layout, direction){
 	}
 };
 Outface.notify._open = function(section, data){
-	section.style.webkitTransform = section.style.transform = "translate3d(0,0,0)";
+	section.style.webkitTransform = section.style.transform = "translate3d(0,100%,0)";
 	section.style.webkitTransition = section.style.transition = "none";
 	section.offsetHeight;
 	section.style.webkitTransition = section.style.transition = "";
+	section.style.webkitTransform = section.style.transform = "";
 	if(section.getAttribute("timeout") > 0)
 		section.timeoutTimeout = setTimeout(function(){
 			Outface.close(section, data);
