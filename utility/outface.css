@@ -336,7 +336,7 @@ sup{ font-size:.7em; vertical-align:super; }
 .page{ position:absolute; left:0; top:0; bottom:0; right:0; -webkit-transition:-webkit-transform .5s,opacity .5s;transition:transform .5s,opacity .5s; }
 
 /* Notifies */
-.notify{ position:absolute; left:0; top:100%; right:0; -webkit-transition:-webkit-transform .5s,opacity .5s;transition:transform .5s,opacity .5s; }
+.notify{ position:absolute; left:0; bottom:0; right:0; -webkit-transition:-webkit-transform .5s,opacity .5s;transition:transform .5s,opacity .5s; }
 
 /* Curtain */
 .curtain{ position:absolute; left:0; top:0; right:0; bottom:0; text-align:center; -webkit-transition:opacity .5s;transition:opacity .5s; background-color:#000; opacity:.75; z-index:1; }
