@@ -633,7 +633,6 @@ Outface.notify.xbuild = function(content, close, context, buttons, timeout){
 	section.className = "notify notify-x prime shell xf ym close";
 	section.setAttribute("template", timeout);
 	section.setAttribute("timeout", timeout);
-	section.close = close;
 	if(buttons.length > 0){
 		section.innerHTML = "<div class='x2-3 xf'></div><div class='x1-3 xb'></div>";
 		section.getElementsByTagName("div")[0].appendChild(content);
