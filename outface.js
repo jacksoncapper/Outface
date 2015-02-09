@@ -633,6 +633,7 @@ Outface.notify.xbuild = function(content, close, context, buttons, timeout){
 	section.className = "notify notify-x prime shell xf ym close";
 	section.setAttribute("template", timeout);
 	section.setAttribute("timeout", timeout);
+	section.close = close;
 	if(buttons.length > 0){
 		section.innerHTML = "<div class='x2-3 xf'></div><div class='x1-3 xb'></div>";
 		section.getElementsByTagName("div")[0].appendChild(content);
@@ -647,15 +648,17 @@ Outface.notify.xbuild = function(content, close, context, buttons, timeout){
 		buttonX.innerHTML = "<i class='fa fa-" + button.icon + "'></i>";
 		buttonX.setAttribute("onclick", "");
 		buttonX.onclick = function(){
-			Outface.close(section);
 			if(close != null)
-				close(this.value);
+				section.addEventListener("close", close);
+			Outface.close(section, this.value);
 		};
 		section.getElementsByTagName("div")[1].appendChild(buttonX);
 	}
+	
 	section.onclick = function(e){
-		if(e.target == section)
-			Outface.close(section);
+		if(close != null)
+			section.addEventListener("close", close);
+		Outface.close(section);
 	};
 	context.appendChild(section);
 	
