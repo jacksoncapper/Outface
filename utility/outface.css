@@ -291,29 +291,13 @@ sup{ font-size:.7em; vertical-align:super; }
 .yb>*{ vertical-align:bottom; }
 
 /* Device */
-@media(max-width:320px){
-	.desktop-show{ display:none; }
-	.tablet-show{ display:none; }
-	.phone-show{ display:inline-block;*display:inline;zoom:1; }
-	.tablet-hide{ display:inline-block;*display:inline;zoom:1; }
-	.phone-hide{ display:none; }
-	.desktop-hide{ display:none; }
+@media(max-width:1014px){
+	.desktop{ display:none; }
+	.mobile{ display:inline-block;*display:inline;zoom:1; }
 }
-@media(min-width:320px) and (max-width:768px){
-	.desktop-show{ display:none; }
-	.phone-show{ display:none; }
-	.tablet-show{ display:inline-block;*display:inline;zoom:1; }
-	.phone-hide{ display:inline-block;*display:inline;zoom:1; }
-	.tablet-hide{ display:none; }
-	.desktop-hide{ display:none; }
-}
-@media(min-width:768px){	
-	.tablet-show{ display:none; }
-	.phone-show{ display:none; }
-	.desktop-show{ display:inline-block;*display:inline;zoom:1; }
-	.phone-hide{ display:inline-block;*display:inline;zoom:1; }
-	.tablet-hide{ display:inline-block;*display:inline;zoom:1; }
-	.desktop-hide{ display:none; }
+@media(min-width:1015px){	
+	.desktop{ display:inline-block;*display:inline;zoom:1; }
+	.mobile{ display:none; }
 }
 
 /* Section */
@@ -383,6 +367,3 @@ sup{ font-size:.7em; vertical-align:super; }
 
 /* Google Maps Fix */
 .map canvas{ margin:0; }
-
-/* CKEditor Fix */
-.cke_editable_inline p, .cke_editable_inline blockquote{ display:block; }
