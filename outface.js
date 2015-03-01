@@ -3,6 +3,7 @@
 document.currentScript = document.currentScript === undefined ? document._currentScript() : document.currentScript;
 var outfacePath = document.currentScript.src.substring(0, document.currentScript.src.lastIndexOf("/"));
 var outfaceWebappPath = typeof outfaceWebappPath != "undefined" ? outfaceWebappPath : "/media";
+var Outface_overscroll = typeof Outface_overscroll != "undefined" ? Outface_overscroll : true;
 var metas = [
 	{ tag:"link", rel:"stylesheet", type:"text/css", href:outfacePath + "/utility/outface.css" },
 	{ tag:"link", rel:"stylesheet", type:"text/css", href:outfacePath + "/media/font-awesome-4.2.0/css/font-awesome.min.css" },
@@ -18,8 +19,7 @@ var metas = [
 	{ tag:"meta", name:"mobile-web-app-capable", content:"yes" },
 	{ tag:"script", src:outfacePath + "/utility/fastclick1.0.3.js" },
 	{ tag:"script", src:outfacePath + "/utility/bowser0.7.2.js" },
-	{ tag:"script", src:outfacePath + "/utility/iscroll5.1.3.js" },
-	{ tag:"script", src:outfacePath + "/utility/ckeditor/ckeditor.js" }
+	{ tag:"script", src:outfacePath + "/utility/iscroll5.1.3.js" }
 ];
 for(var i = 0; i < metas.length; i++) try{
 	var meta = document.createElement(metas[i].tag);
@@ -91,6 +91,15 @@ Outface._event = function(element, name, data, cascade){
 				Outface._event(child, name, data);
 		}
 	}
+};
+Outface._preventScrollClick = function(element, e){
+	while(element.iscroll == null)
+		element = element.parentNode;
+	if(element.iscroll.moved){
+		e.preventDefault;
+		return false;
+	}
+	return true;
 };
 Outface._open = function(section, data, _root){
 	_root = _root != null ? _root : true;
@@ -241,8 +250,10 @@ Outface.register = function(element, context, data){
 		var config = {
 			scrollX : scrollX,
 			scrollY : scrollY,
-			mouseWheel : true,
-			preventDefaultException:{tagName:/.*/}
+			mouseWheel: true,
+			preventDefaultException:{tagName:/.*/},
+			eventPassthrough: true,
+			preventDefault: false
 		};
 		if(element.iscrollConfig && JSON.stringify(element.iscrollConfig) != JSON.stringify(config)){
 			element.iscroll.destroy();
@@ -255,6 +266,9 @@ Outface.register = function(element, context, data){
 		}
 		else
 			setTimeout(function(){ element.iscroll.refresh(); }, 250);
+		var clickers = element.getElementsByTagName("a");
+		for(var i = 0; i < clickers.length; i++)
+			clickers[i].setAttribute("onclick", "if(!Outface._preventScrollClick(this, event)) return false;" + clickers[i].getAttribute("onclick"));
 	}
 };
 Outface.clone = function(template, data){
@@ -938,13 +952,14 @@ Outface.history.forward = function(context){
 window.addEventListener("load", function(){
 	FastClick.attach(document.body);
 	Outface.register(document.body);
-	document.body.addEventListener("touchmove",function(e){
-		var parent = e.target;
-		while(parent != document.body){
-			if(Outface._hasClass(parent, "scroll") || Outface._hasClass(parent, "scrollX") || Outface._hasClass(parent, "scrollY"))
-				return;
-			parent = parent.parentNode;
-		}
-		e.preventDefault();
-	});
+	if(!Outface_overscroll)
+		document.body.addEventListener("touchmove",function(e){
+			var parent = e.target;
+			while(parent != document.body){
+				if(Outface._hasClass(parent, "scroll") || Outface._hasClass(parent, "scrollX") || Outface._hasClass(parent, "scrollY"))
+					return;
+				parent = parent.parentNode;
+			}
+			e.preventDefault();
+		});
 });
