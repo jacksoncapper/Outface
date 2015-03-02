@@ -213,7 +213,7 @@ sup{ font-size:.7em; vertical-align:super; }
 /* Flex */
 .flex{ display:-webkit-inline-box;display:-ms-inline-flexbox;display:-webkit-inline-flex;display:inline-flex; -webkit-box-orient:vertical;-ms-flex-direction:column;-webkit-flex-direction:column;flex-direction:column }
 .full{ position:absolute; left:0; top:0; right:0; bottom:0; }
-.center{ display:-webkit-inline-flex; display:inline-flex; -webkit-align-items:center; align-items:center; -webkit-justify-content:center; justify-content:center; }
+.center{ display:-webkit-inline-flex; display:-webkit-inline-box; display:inline-flex; -webkit-box-align:center; -webkit-align-items:center; align-items:center; -webkit-box-pack:center; -webkit-justify-content:center; justify-content:center; }
 .flex header{ position:relative; width:100%; -webkit-flex-shrink:0; flex-shrink:0; z-index:1; }
 .flex main{ position:relative; display:block; width:100%; -webkit-box-flex:1; -ms-flex:1; -webkit-flex-grow:1; flex-grow:1; }
 .flex footer{ position:relative; width:100%; -webkit-flex-shrink:0; flex-shrink:0; z-index:1; }
