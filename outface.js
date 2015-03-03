@@ -839,7 +839,6 @@ Outface.load.stop = function(element){
 			clearTimeout(element.loadTransitionendTimeout);
 			delete element.loadTransitionendTimeout;
 
-			element.removeEventListener("closed", closed);
 			element.removeChild(element.outfaceLoad);
 			delete element.outfaceLoad;
 		};
