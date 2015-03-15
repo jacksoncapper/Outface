@@ -12,6 +12,8 @@ var html5tags = ["header", "section", "article", "aside", "nav", "footer"];
 for(i in html5tags)
 	document.createElement(html5tags[i]);
 document.head = document.getElementsByTagName("head")[0];
+/* Prevent Mobile Overscroll */
+if(!Outface_overscroll) window.addEventListener("load", function(){ document.body.addEventListener("touchmove",function(e){ var parent = e.target; while(parent != document.body){ if(Outface._hasClass(parent, "scroll") || Outface._hasClass(parent, "scroll-x") || Outface._hasClass(parent, "scroll-y")) return; parent = parent.parentNode; } e.preventDefault(); }); });
 
 /* Meta */
 document.currentScript = document.currentScript === undefined ? document._currentScript() : document.currentScript;
@@ -35,36 +37,19 @@ var metas = [
 	{ tag:"script", src:outfacePath + "/utility/bowser0.7.2.js" },
 	{ tag:"script", src:outfacePath + "/utility/iscroll5.1.3.js" }
 ];
-Outface_scriptCount = 0;
-Outface_scriptCountLoaded = 0;
-for(var i = 0; i < metas.length; i++) try{
+for(var i = 0; i < metas.length; i++){
 	var meta = document.createElement(metas[i].tag);
 	for(var attributeName in metas[i])
 		if(attributeName != "tag" && attributeName != "innerHTML")
 			meta.setAttribute(attributeName, metas[i][attributeName]);
 		else if(attributeName == "innerHTML")
 			meta.innerHTML = metas[i]["innerHTML"];
-	if(metas[i].tag == "script"){
-		meta.onreadystatechange = function(){ // IE8
-			if(this.readyState == 'complete' || this.readyState == 'loaded')
-				Outface_scriptCountLoaded++;
-			if(Outface_scriptCountLoaded == Outface_scriptCount)
-				Outface.initiate();
-		};
-		meta.onload = function(){
-			Outface_scriptCountLoaded++;
-			if(Outface_scriptCountLoaded == Outface_scriptCount)
-				Outface.initiate();
-		};
-		Outface_scriptCount++;
-	}
-	else if(metas[i].tag == "link" && metas[i].rel == "stylesheet" && document.createStyleSheet){ // IE8
+	if(metas[i].tag == "link" && metas[i].rel == "stylesheet" && document.createStyleSheet){ // IE8
 		document.createStyleSheet(metas[i].href);
 		continue;
-	}
-		
+	}	
 	document.head.appendChild(meta);
-}catch(e){}
+}
 
 /* Core */
 var Outface = {};
@@ -987,17 +972,6 @@ Outface.history.forward = function(context){
 	return Outface.history.go(context, 1);
 };
 
-Outface.initiate = function(){
-	FastClick.attach(document.body);
+window.addEventListener("load", function(){
 	Outface.register(document.body);
-	if(!Outface_overscroll)
-		document.body.addEventListener("touchmove",function(e){
-			var parent = e.target;
-			while(parent != document.body){
-				if(Outface._hasClass(parent, "scroll") || Outface._hasClass(parent, "scroll-x") || Outface._hasClass(parent, "scroll-y"))
-					return;
-				parent = parent.parentNode;
-			}
-			e.preventDefault();
-		});
-};
+});
