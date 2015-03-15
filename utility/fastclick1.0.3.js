@@ -819,3 +819,5 @@ if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) 
 } else {
 	window.FastClick = FastClick;
 }
+
+FastClick.attach(document.body);
