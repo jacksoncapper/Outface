@@ -52,13 +52,10 @@ for(var i = 0; i < metas.length; i++){
 	}
 	else if(metas[i].tag == "script"){
 		Outface_scriptCount++;
-		function scriptLoaded(){
+		meta.onreadystatechange = meta.load = function(){
 			if(this.readyState == "loaded" || this.readyState == undefined)
 				Outface_scriptLoadedCount++;
-			if(Outface_scriptLoadedCount == Outface_scriptCount)
-				Outface.initiate();
-		}
-		meta.onreadystatechange = meta.load = scriptLoaded; // IE8
+		}; // IE8
 	}
 	document.head.appendChild(meta);
 }
@@ -361,12 +358,19 @@ Outface.openX = function(section, data){
 	}
 	Outface.history.pushState(section.parentNode, state);
 };
-Outface.initiate = function(){
-	FastClick.attach(document.body);
-	Outface.upbrowse();
-	Outface.webapp();
-	Outface.register(document.body);
-};
+window.addEventListener("load", function(){
+	function load(){
+		if(Outface_scriptLoadedCount < Outface_scriptCount){
+			setTimeout(load, 100);
+			return;
+		}
+		FastClick.attach(document.body);
+		Outface.upbrowse();
+		Outface.webapp();
+		Outface.register(document.body);
+	}
+	load();
+});
 
 /* Theme */
 Outface.theme = {};
