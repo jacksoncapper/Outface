@@ -52,7 +52,7 @@ for(var i = 0; i < metas.length; i++){
 	}
 	else if(metas[i].tag == "script"){
 		Outface_scriptCount++;
-		meta.onreadystatechange = meta.load = function(){
+		meta.onreadystatechange = meta.onload = function(){
 			if(this.readyState == "loaded" || this.readyState == undefined)
 				Outface_scriptLoadedCount++;
 		}; // IE8
