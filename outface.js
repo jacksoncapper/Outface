@@ -17,26 +17,28 @@ if(!Outface_overscroll) window.addEventListener("load", function(){ document.bod
 
 /* Meta */
 document.currentScript = document.currentScript === undefined ? document._currentScript() : document.currentScript;
-var outfacePath = document.currentScript.src.substring(0, document.currentScript.src.lastIndexOf("/"));
-var outfaceWebappPath = typeof outfaceWebappPath != "undefined" ? outfaceWebappPath : "/media";
+var Outface_path = document.currentScript.src.substring(0, document.currentScript.src.lastIndexOf("/"));
+var Outface_webappPath = typeof Outface_webappPath != "undefined" ? Outface_webappPath : "/media";
 var Outface_overscroll = typeof Outface_overscroll != "undefined" ? Outface_overscroll : true;
 var metas = [
-	{ tag:"link", rel:"stylesheet", type:"text/css", href:outfacePath + "/utility/outface.css" },
-	{ tag:"link", rel:"stylesheet", type:"text/css", href:outfacePath + "/media/font-awesome-4.2.0/css/font-awesome.min.css" },
-	{ tag:"link", rel:"icon", href:outfaceWebappPath + "/icon.png" },
-	{ tag:"link", rel:"apple-touch-icon-precomposed", href:outfaceWebappPath + "/icon.png" },
-	{ tag:"link", media:"(device-width:320px)", rel:"apple-touch-startup-image", href:outfaceWebappPath + "/iphone.jpg" },
-	{ tag:"link", media:"(device-width:768px)", rel:"apple-touch-startup-image", href:outfaceWebappPath + "/ipad.jpg" },
+	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/outface.css" },
+	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/media/font-awesome-4.2.0/css/font-awesome.min.css" },
+	{ tag:"link", rel:"icon", href:Outface_webappPath + "/icon.png" },
+	{ tag:"link", rel:"apple-touch-icon-precomposed", href:Outface_webappPath + "/icon.png" },
+	{ tag:"link", media:"(device-width:320px)", rel:"apple-touch-startup-image", href:Outface_webappPath + "/iphone.jpg" },
+	{ tag:"link", media:"(device-width:768px)", rel:"apple-touch-startup-image", href:Outface_webappPath + "/ipad.jpg" },
 	{ tag:"meta", name:"viewport", content:"width=device-width,initial-scale=1,user-scalable=no" },
 	{ tag:"meta", name:"format-detection", content:"telephone=no" },
 	{ tag:"meta", name:"msapplication-tap-highlight", content:"no" },
 	{ tag:"meta", name:"apple-mobile-web-app-capable", content:"yes" },
 	{ tag:"meta", name:"apple-mobile-web-app-status-bar-style", content:"black" },
 	{ tag:"meta", name:"mobile-web-app-capable", content:"yes" },
-	{ tag:"script", src:outfacePath + "/utility/fastclick1.0.3.js" },
-	{ tag:"script", src:outfacePath + "/utility/bowser0.7.2.js" },
-	{ tag:"script", src:outfacePath + "/utility/iscroll5.1.3.js" }
+	{ tag:"script", src:Outface_path + "/utility/fastclick1.0.3.js" },
+	{ tag:"script", src:Outface_path + "/utility/bowser0.7.2.js" },
+	{ tag:"script", src:Outface_path + "/utility/iscroll5.1.3.js" }
 ];
+var Outface_scriptCount = 0;
+var Outface_scriptLoadedCount = 0;
 for(var i = 0; i < metas.length; i++){
 	var meta = document.createElement(metas[i].tag);
 	for(var attributeName in metas[i])
@@ -47,7 +49,17 @@ for(var i = 0; i < metas.length; i++){
 	if(metas[i].tag == "link" && metas[i].rel == "stylesheet" && document.createStyleSheet){ // IE8
 		document.createStyleSheet(metas[i].href);
 		continue;
-	}	
+	}
+	else if(metas[i].tag == "script"){
+		Outface_scriptCount++;
+		function scriptLoaded(){
+			if(this.readyState == "loaded" || this.readyState == undefined)
+				Outface_scriptLoadedCount++;
+			if(Outface_scriptLoadedCount == Outface_scriptCount)
+				Outface.initiate();
+		}
+		meta.onreadystatechange = meta.load = scriptLoaded; // IE8
+	}
 	document.head.appendChild(meta);
 }
 
@@ -349,6 +361,12 @@ Outface.openX = function(section, data){
 	}
 	Outface.history.pushState(section.parentNode, state);
 };
+Outface.initiate = function(){
+	FastClick.attach(document.body);
+	Outface.upbrowse();
+	Outface.webapp();
+	Outface.register(document.body);
+};
 
 /* Theme */
 Outface.theme = {};
@@ -406,7 +424,7 @@ Outface.upbrowse = function(){
 	var supportedBrowsers = {
 		"chrome": 24,
 		"firefox": 4,
-		"msie": 10,
+		"msie": 8,
 		"android": 4,
 		"safari": 7.1,
 		"ios": 4.1,
@@ -429,11 +447,11 @@ Outface.upbrowse = function(){
 
 	var innerHtml = "<h2>Your browser is outdated</h2><br/>";
 	innerHtml += "<p>A modern browser is required to use this web application.<br/><strong>Please select a free browser:</strong></p><br/>";
-	innerHtml += "<p class='browser'><a href='http://google.com/chrome' target='_blank'><img src='" + outfacePath + "/media/chrome.png'/><br/>CHROME</a></p>";
-	innerHtml += "<p class='browser'><a href='http://getfirefox.com' target='_blank'><img src='" + outfacePath + "/media/firefox.png'/><br/>FIREFOX</a></p>";
-	innerHtml += "<p class='browser'><a href='http://support.apple.com/downloads#safari' target='_blank'><img src='" + outfacePath + "/media/safari.png'/><br/>SAFARI</a></p>";
-	innerHtml += "<p class='browser'><a href='http://windows.microsoft.com/en-au/internet-explorer/download-ie' target='_blank'><img src='" + outfacePath + "/media/msie.png'/><br/>EXPLORER</a></p>";
-	innerHtml += "<p class='browser'><a href='http://www.opera.com' target='_blank'><img src='" + outfacePath + "/media/opera.png'/><br/>OPERA</a></p><br/>";
+	innerHtml += "<p class='browser'><a href='http://google.com/chrome' target='_blank'><img src='" + Outface_path + "/media/chrome.png'/><br/>CHROME</a></p>";
+	innerHtml += "<p class='browser'><a href='http://getfirefox.com' target='_blank'><img src='" + Outface_path + "/media/firefox.png'/><br/>FIREFOX</a></p>";
+	innerHtml += "<p class='browser'><a href='http://support.apple.com/downloads#safari' target='_blank'><img src='" + Outface_path + "/media/safari.png'/><br/>SAFARI</a></p>";
+	innerHtml += "<p class='browser'><a href='http://windows.microsoft.com/en-au/internet-explorer/download-ie' target='_blank'><img src='" + Outface_path + "/media/msie.png'/><br/>EXPLORER</a></p>";
+	innerHtml += "<p class='browser'><a href='http://www.opera.com' target='_blank'><img src='" + Outface_path + "/media/opera.png'/><br/>OPERA</a></p><br/>";
 	innerHtml += "<button>No thanks</button>";
 
 	var curtain = document.createElement("div");
@@ -452,8 +470,7 @@ Outface.upbrowse = function(){
 	div.style.opacity = "";
 	div.getElementsByTagName("button")[0].onclick = close;
 	div.style.marginTop = -(div.clientHeight / 2) + "px";
-}
-window.addEventListener("load", Outface.upbrowse);
+};
 
 /* Webapp */
 Outface.webapp = function(){
@@ -499,7 +516,6 @@ Outface.webapp = function(){
 	div.offsetHeight;
 	div.style.opacity = "";
 };
-window.addEventListener("load", Outface.webapp);
 
 /* Page */
 Outface.page = {};
@@ -971,7 +987,3 @@ Outface.history.back = function(context){
 Outface.history.forward = function(context){
 	return Outface.history.go(context, 1);
 };
-
-window.addEventListener("load", function(){
-	Outface.register(document.body);
-});
