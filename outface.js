@@ -3,6 +3,7 @@ if(!document.createEvent){var DUNNOABOUTDOMLOADED=true,READYEVENTDISPATCHED=fals
 (function(g){'use strict';function textNodeIfString(a){return typeof a==='string'?g.document.createTextNode(a):a}function mutationMacro(a){if(a.length===1){return textNodeIfString(a[0])}for(var b=g.document.createDocumentFragment(),list=slice.call(a),i=0;i<a.length;i++){b.appendChild(textNodeIfString(list[i]))}return b}for(var h=Object.defineProperty||function(a,b,c){a.__defineGetter__(b,c.get)},indexOf=[].indexOf||function indexOf(a){var b=this.length;while(b--){if(this[b]===a){break}}return b},head,property,verifyToken,DOMTokenList,trim=/^\s+|\s+$/g,spaces=/\s+/,SPACE='\x20',toggle=function toggle(a,b){if(this.contains(a)){if(!b){this.remove(a)}}else if(b===undefined||b){b=true;this.add(a)}return!!b},ElementPrototype=(g.Element||g.Node||g.HTMLElement).prototype,properties=['matches',(ElementPrototype.matchesSelector||ElementPrototype.webkitMatchesSelector||ElementPrototype.khtmlMatchesSelector||ElementPrototype.mozMatchesSelector||ElementPrototype.msMatchesSelector||ElementPrototype.oMatchesSelector||function matches(a){var b=this.parentNode;return!!b&&-1<indexOf.call(b.querySelectorAll(a),this)}),'closest',function closest(a){var b=this,matches;while((matches=b&&b.matches)&&!b.matches(a)){b=b.parentNode}return matches?b:null},'prepend',function prepend(){var a=this.firstChild,node=mutationMacro(arguments);if(a){this.insertBefore(node,a)}else{this.appendChild(node)}},'append',function append(){this.appendChild(mutationMacro(arguments))},'before',function before(){var a=this.parentNode;if(a){a.insertBefore(mutationMacro(arguments),this)}},'after',function after(){var a=this.parentNode,nextSibling=this.nextSibling,node=mutationMacro(arguments);if(a){if(nextSibling){a.insertBefore(node,nextSibling)}else{a.appendChild(node)}}},'replace',function replace(){this.replaceWith.apply(this,arguments)},'replaceWith',function replaceWith(){var a=this.parentNode;if(a){a.replaceChild(mutationMacro(arguments),this)}},'remove',function remove(){var a=this.parentNode;if(a){a.removeChild(this)}}],slice=properties.slice,i=properties.length;i;i-=2){property=properties[i-2];if(!(property in ElementPrototype)){ElementPrototype[property]=properties[i-1]}}if(!document.createElement('a').matches('a')){ElementPrototype[property]=function(b){return function(a){return b.call(this.parentNode?this:document.createDocumentFragment().appendChild(this),a)}}(ElementPrototype[property])}if(!('classList'in document.documentElement)){verifyToken=function(a){if(!a){throw'SyntaxError';}else if(spaces.test(a)){throw'InvalidCharacterError';}return a};DOMTokenList=function(a){var b=a.className.replace(trim,'');if(b.length){properties.push.apply(this,b.split(spaces))}this._=a};DOMTokenList.prototype={length:0,add:function add(){for(var j=0,token;j<arguments.length;j++){token=arguments[j];if(!this.contains(token)){properties.push.call(this,property)}}this._.className=''+this},contains:(function(b){return function contains(a){i=b.call(this,property=verifyToken(a));return-1<i}}([].indexOf||function(a){i=this.length;while(i--&&this[i]!==a){}return i})),item:function item(i){return this[i]||null},remove:function remove(){for(var j=0,token;j<arguments.length;j++){token=arguments[j];if(this.contains(token)){properties.splice.call(this,i,1)}}this._.className=''+this},toggle:toggle,toString:function toString(){return properties.join.call(this,SPACE)}};h(ElementPrototype,'classList',{get:function get(){return new DOMTokenList(this)},set:function(){}})}else{DOMTokenList=document.createElement('div').classList;DOMTokenList.add('a','b','a');if('a\x20b'!=DOMTokenList){ElementPrototype=DOMTokenList.constructor.prototype;if(!('add'in ElementPrototype)){ElementPrototype=g.DOMTokenList.prototype}verifyToken=function(a){return function(){var i=0;while(i<arguments.length){a.call(this,arguments[i++])}}};ElementPrototype.add=verifyToken(ElementPrototype.add);ElementPrototype.remove=verifyToken(ElementPrototype.remove);ElementPrototype.toggle=toggle}}if(!('head'in document)){h(document,'head',{get:function(){return head||(head=document.getElementsByTagName('head')[0])}})}try{new g.CustomEvent('?')}catch(o_O){g.CustomEvent=function(e,f){function CustomEvent(a,b){var c=document.createEvent(e);if(typeof a!='string'){throw new Error('An event name must be provided');}if(e=='Event'){c.initCustomEvent=initCustomEvent}if(b==null){b=f}c.initCustomEvent(a,b.bubbles,b.cancelable,b.detail);return c}function initCustomEvent(a,b,c,d){this.initEvent(a,b,c);this.detail=d}return CustomEvent}(g.CustomEvent?'CustomEvent':'Event',{bubbles:false,cancelable:false,detail:null})}}(window));
 /* Current Script Polyfill */
 (function(){function o(e){if(typeof e==="string"&&e){for(var t=0,n=s.length;t<n;t++){if(s[t].src===e){return s[t]}}}}function u(){var e;for(var t=0,n=s.length;t<n;t++){if(!s[t].src){if(e){return undefined}e=s[t]}}return e}function a(e,t){var n,r,i,s=typeof t==="number";t=s?t:typeof f.skipStackDepth==="number"?f.skipStackDepth:0;if(typeof e==="string"&&e){if(s){r=e.match(/((?:http[s]?|file):\/\/[\/]?.+?\/[^:\)]*?)(?::\d+)(?::\d+)?/)}else{r=e.match(/^(?:|[^:@]*@|.+\)@(?=http[s]?|file)|.+?\s+(?: at |@)(?:[^:\(]+ )*[\(]?)((?:http[s]?|file):\/\/[\/]?.+?\/[^:\)]*?)(?::\d+)(?::\d+)?/);if(!(r&&r[1])){r=e.match(/\)@((?:http[s]?|file):\/\/[\/]?.+?\/[^:\)]*?)(?::\d+)(?::\d+)?/);if(r&&r[1]){n=r[1]}}}if(r&&r[1]){if(t>0){i=e.slice(e.indexOf(r[0])+r[0].length);n=a(i,t-1)}else{n=r[1]}}}return n}function f(){if(s.length===0){return}if(s.length===1){return s[0]}if("readyState"in s[0]){for(var e=s.length;e--;){if(s[e].readyState==="interactive"){return s[e]}}}if(document.readyState==="loading"){return s[s.length-1]}if(r){try{throw new Error}catch(t){var n=a(t.stack);var f=o(n);if(!f&&n===i){f=u()}return f}}}var e=!("currentScript"in document);var t=document.__defineGetter__;var n=typeof Object.defineProperty==="function"&&function(){var e;try{Object.defineProperty(document,"_xyz",{value:"blah",enumerable:true,writable:false,configurable:false});e=document._xyz==="blah";delete document._xyz}catch(t){e=false}return e}();var r=function(){var e=false;try{throw new Error}catch(t){e=typeof t.stack==="string"&&!!t.stack}return e}();var i=window.location.href;var s=document.getElementsByTagName("script");f.skipStackDepth=1;document._currentScript=f;if(e){if(n){Object.defineProperty(document,"currentScript",{get:f,enumerable:true,configurable:false})}else if(t){document.__defineGetter__("currentScript",f)}}})();
+document.currentScript = document.currentScript === undefined ? document._currentScript() : document.currentScript;
 /* Check Transition Support */
 var transitionSupport = document.documentElement.style.webkitTransition !== undefined || document.documentElement.style.transition !== undefined;
 /* Placeholder Polyfill */
@@ -12,14 +13,11 @@ var html5tags = ["header", "section", "article", "aside", "nav", "footer"];
 for(i in html5tags)
 	document.createElement(html5tags[i]);
 document.head = document.getElementsByTagName("head")[0];
-/* Prevent Mobile Overscroll */
-if(!Outface_overscroll) window.addEventListener("load", function(){ document.body.addEventListener("touchmove",function(e){ var parent = e.target; while(parent != document.body){ if(Outface._hasClass(parent, "scroll") || Outface._hasClass(parent, "scroll-x") || Outface._hasClass(parent, "scroll-y")) return; parent = parent.parentNode; } e.preventDefault(); }); });
 
 /* Meta */
-document.currentScript = document.currentScript === undefined ? document._currentScript() : document.currentScript;
 var Outface_path = document.currentScript.src.substring(0, document.currentScript.src.lastIndexOf("/"));
 var Outface_webappPath = typeof Outface_webappPath != "undefined" ? Outface_webappPath : "/media";
-var Outface_overscroll = typeof Outface_overscroll != "undefined" ? Outface_overscroll : true;
+var Outface_webapp = typeof Outface_webapp != "undefined" ? Outface_webapp : false;
 var metas = [
 	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/outface.css" },
 	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/media/font-awesome-4.2.0/css/font-awesome.min.css" },
@@ -365,8 +363,10 @@ window.addEventListener("load", function(){
 			return;
 		}
 		FastClick.attach(document.body);
-		Outface.upbrowse();
-		Outface.webapp();
+		if(Outface_webapp)
+			Outface.webapp();
+		else
+			Outface.upbrowse();
 		Outface.register(document.body);
 	}
 	load();
@@ -478,7 +478,7 @@ Outface.upbrowse = function(){
 
 /* Webapp */
 Outface.webapp = function(){
-	if(bowser.mobile === true)
+	if(bowser.mobile === true){
 		if(bowser.android){
 			if(localStorage.webappShown)
 				return;
@@ -490,11 +490,15 @@ Outface.webapp = function(){
 			if(window.navigator.standalone)
 				return;
 			var className = "webapp bottom";
-			var innerHTML = "<p>Press <img src='" + webappPath + "/ios-share.png'/> then <strong>Add to Home Screen</strong></p>";
+			var innerHTML = "<p>Press <img src='" + Outface_webappPath + "/ios-share.png'/> then <strong>Add to Home Screen</strong></p>";
 		}
-		else return;
-	else return;
-
+		else
+			return;
+	}
+	else
+		return;
+	var className = "webapp top";
+	var innerHTML = "<p>Press + then <strong>Add to Home Screen</strong></p>";
 	function close(){
 		curtain.style.opacity = "0";
 		div.style.opacity = "0";
