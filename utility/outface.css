@@ -106,7 +106,7 @@ input[type=text],input[type=email],input[type=password],input[type=number],input
 
 /* Button */
 button{ display:inline-block;*display:inline;zoom:1; margin:1%;margin:calc(5px); padding:8px 25px 8px 25px; font-size:14px; font-weight:bold; line-height:1.4em; text-align:center; text-transform:uppercase; cursor:pointer; -webkit-transition:background-color .25s,border-color .25s,color .25s,-webkit-transform .25s;transition:background-color .25s,border-color .25s,color .25s,transform .25s; border-radius:5em; line-height:1em; }
-button:disabled{ -webkit-transform:scale(0,0);transform:scale(0,0); }
+button:disabled{ -webkit-transform:scale(0.001,0.001);transform:scale(0.001,0.001); }
 button.load:disabled{ -webkit-transform:scale(1,1);transform:scale(1,1); }
 /* Shades */
 button{ color:#FFF; }
