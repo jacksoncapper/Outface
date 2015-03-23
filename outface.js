@@ -8,6 +8,8 @@ document.currentScript = document.currentScript === undefined ? document._curren
 var transitionSupport = document.documentElement.style.webkitTransition !== undefined || document.documentElement.style.transition !== undefined;
 /* Placeholder Polyfill */
 !function(a){"use strict";function b(){}function c(){try{return document.activeElement}catch(a){}}function d(a,b){for(var c=0,d=a.length;d>c;c++)if(a[c]===b)return!0;return!1}function e(a,b,c){return a.addEventListener?a.addEventListener(b,c,!1):a.attachEvent?a.attachEvent("on"+b,c):void 0}function f(a,b){var c;a.createTextRange?(c=a.createTextRange(),c.move("character",b),c.select()):a.selectionStart&&(a.focus(),a.setSelectionRange(b,b))}function g(a,b){try{return a.type=b,!0}catch(c){return!1}}function h(a,b){if(a&&a.getAttribute(B))b(a);else for(var c,d=a?a.getElementsByTagName("input"):N,e=a?a.getElementsByTagName("textarea"):O,f=d?d.length:0,g=e?e.length:0,h=f+g,i=0;h>i;i++)c=f>i?d[i]:e[i-f],b(c)}function i(a){h(a,k)}function j(a){h(a,l)}function k(a,b){var c=!!b&&a.value!==b,d=a.value===a.getAttribute(B);if((c||d)&&"true"===a.getAttribute(C)){a.removeAttribute(C),a.value=a.value.replace(a.getAttribute(B),""),a.className=a.className.replace(A,"");var e=a.getAttribute(I);parseInt(e,10)>=0&&(a.setAttribute("maxLength",e),a.removeAttribute(I));var f=a.getAttribute(D);return f&&(a.type=f),!0}return!1}function l(a){var b=a.getAttribute(B);if(""===a.value&&b){a.setAttribute(C,"true"),a.value=b,a.className+=" "+z;var c=a.getAttribute(I);c||(a.setAttribute(I,a.maxLength),a.removeAttribute("maxLength"));var d=a.getAttribute(D);return d?a.type="text":"password"===a.type&&g(a,"text")&&a.setAttribute(D,"password"),!0}return!1}function m(a){return function(){P&&a.value===a.getAttribute(B)&&"true"===a.getAttribute(C)?f(a,0):k(a)}}function n(a){return function(){l(a)}}function o(a){return function(){i(a)}}function p(a){return function(b){return v=a.value,"true"===a.getAttribute(C)&&v===a.getAttribute(B)&&d(x,b.keyCode)?(b.preventDefault&&b.preventDefault(),!1):void 0}}function q(a){return function(){k(a,v),""===a.value&&(a.blur(),f(a,0))}}function r(a){return function(){a===c()&&a.value===a.getAttribute(B)&&"true"===a.getAttribute(C)&&f(a,0)}}function s(a){var b=a.form;b&&"string"==typeof b&&(b=document.getElementById(b),b.getAttribute(E)||(e(b,"submit",o(b)),b.setAttribute(E,"true"))),e(a,"focus",m(a)),e(a,"blur",n(a)),P&&(e(a,"keydown",p(a)),e(a,"keyup",q(a)),e(a,"click",r(a))),a.setAttribute(F,"true"),a.setAttribute(B,T),(P||a!==c())&&l(a)}var t=document.createElement("input"),u=void 0!==t.placeholder;if(a.Placeholders={nativeSupport:u,disable:u?b:i,enable:u?b:j},!u){var v,w=["text","search","url","tel","email","password","number","textarea"],x=[27,33,34,35,36,37,38,39,40,8,46],y="#ccc",z="placeholdersjs",A=new RegExp("(?:^|\\s)"+z+"(?!\\S)"),B="data-placeholder-value",C="data-placeholder-active",D="data-placeholder-type",E="data-placeholder-submit",F="data-placeholder-bound",G="data-placeholder-focus",H="data-placeholder-live",I="data-placeholder-maxlength",J=100,K=document.getElementsByTagName("head")[0],L=document.documentElement,M=a.Placeholders,N=document.getElementsByTagName("input"),O=document.getElementsByTagName("textarea"),P="false"===L.getAttribute(G),Q="false"!==L.getAttribute(H),R=document.createElement("style");R.type="text/css";var S=document.createTextNode("."+z+" {color:"+y+";}");R.styleSheet?R.styleSheet.cssText=S.nodeValue:R.appendChild(S),K.insertBefore(R,K.firstChild);for(var T,U,V=0,W=N.length+O.length;W>V;V++)U=V<N.length?N[V]:O[V-N.length],T=U.attributes.placeholder,T&&(T=T.nodeValue,T&&d(w,U.type)&&s(U));var X=setInterval(function(){for(var a=0,b=N.length+O.length;b>a;a++)U=a<N.length?N[a]:O[a-N.length],T=U.attributes.placeholder,T?(T=T.nodeValue,T&&d(w,U.type)&&(U.getAttribute(F)||s(U),(T!==U.getAttribute(B)||"password"===U.type&&!U.getAttribute(D))&&("password"===U.type&&!U.getAttribute(D)&&g(U,"text")&&U.setAttribute(D,"password"),U.value===U.getAttribute(B)&&(U.value=T),U.setAttribute(B,T)))):U.getAttribute(C)&&(k(U),U.removeAttribute(B));Q||clearInterval(X)},J);e(a,"beforeunload",function(){M.disable()})}}(this);
+/* Classlist Polyfill */
+if("document" in self){if(!("classList" in document.createElement("_"))){(function(j){"use strict";if(!("Element" in j)){return}var a="classList",f="prototype",m=j.Element[f],b=Object,k=String[f].trim||function(){return this.replace(/^\s+|\s+$/g,"")},c=Array[f].indexOf||function(q){var p=0,o=this.length;for(;p<o;p++){if(p in this&&this[p]===q){return p}}return -1},n=function(o,p){this.name=o;this.code=DOMException[o];this.message=p},g=function(p,o){if(o===""){throw new n("SYNTAX_ERR","An invalid or illegal string was specified")}if(/\s/.test(o)){throw new n("INVALID_CHARACTER_ERR","String contains an invalid character")}return c.call(p,o)},d=function(s){var r=k.call(s.getAttribute("class")||""),q=r?r.split(/\s+/):[],p=0,o=q.length;for(;p<o;p++){this.push(q[p])}this._updateClassName=function(){s.setAttribute("class",this.toString())}},e=d[f]=[],i=function(){return new d(this)};n[f]=Error[f];e.item=function(o){return this[o]||null};e.contains=function(o){o+="";return g(this,o)!==-1};e.add=function(){var s=arguments,r=0,p=s.length,q,o=false;do{q=s[r]+"";if(g(this,q)===-1){this.push(q);o=true}}while(++r<p);if(o){this._updateClassName()}};e.remove=function(){var t=arguments,s=0,p=t.length,r,o=false,q;do{r=t[s]+"";q=g(this,r);while(q!==-1){this.splice(q,1);o=true;q=g(this,r)}}while(++s<p);if(o){this._updateClassName()}};e.toggle=function(p,q){p+="";var o=this.contains(p),r=o?q!==true&&"remove":q!==false&&"add";if(r){this[r](p)}if(q===true||q===false){return q}else{return !o}};e.toString=function(){return this.join(" ")};if(b.defineProperty){var l={get:i,enumerable:true,configurable:true};try{b.defineProperty(m,a,l)}catch(h){if(h.number===-2146823252){l.enumerable=false;b.defineProperty(m,a,l)}}}else{if(b[f].__defineGetter__){m.__defineGetter__(a,i)}}}(self))}else{(function(){var b=document.createElement("_");b.classList.add("c1","c2");if(!b.classList.contains("c2")){var c=function(e){var d=DOMTokenList.prototype[e];DOMTokenList.prototype[e]=function(h){var g,f=arguments.length;for(g=0;g<f;g++){h=arguments[g];d.call(this,h)}}};c("add");c("remove")}b.classList.toggle("c3",false);if(b.classList.contains("c3")){var a=DOMTokenList.prototype.toggle;DOMTokenList.prototype.toggle=function(d,e){if(1 in arguments&&!this.contains(d)===!e){return e}else{return a.call(this,d)}}}b=null}())}};
 /* HTML5 Tag Polyfill */
 var html5tags = ["header", "section", "article", "aside", "nav", "footer"];
 for(i in html5tags)
@@ -64,7 +66,7 @@ Outface._priority = [];
 Outface._curtain = function(section){
 	var curtain = document.createElement("div");
 	curtain.className = "curtain";
-	if(!Outface._hasClass(section, "modal")){
+	if(!section.classList.contains("modal")){
 		curtain.addEventListener("mousedown", function(e){ if(e.target == curtain) Outface.close(section); });
 		curtain.addEventListener("touchstart", function(e){ if(e.target == curtain) Outface.close(section); });
 	}
@@ -88,23 +90,12 @@ Outface._curtain = function(section){
 };
 Outface._getLayoutClass = function(section){
 	var layoutClass = null;
-	layoutClass = Outface._hasClass(section, "page") ? "page" : layoutClass;
-	layoutClass = Outface._hasClass(section, "prompt") ? "prompt" : layoutClass;
-	layoutClass = Outface._hasClass(section, "notify") ? "notify" : layoutClass;
-	layoutClass = Outface._hasClass(section, "dialog") ? "dialog" : layoutClass;
+	layoutClass = section.classList.contains("page") ? "page" : layoutClass;
+	layoutClass = section.classList.contains("prompt") ? "prompt" : layoutClass;
+	layoutClass = section.classList.contains("notify") ? "notify" : layoutClass;
+	layoutClass = section.classList.contains("dialog") ? "dialog" : layoutClass;
 	return layoutClass;
 };
-Outface._addClass = function(el, name){
-   if (!Outface._hasClass(el, name)) { el.className += (el.className ? ' ' : '') +name; }
-}
-Outface._hasClass = function(el, name){
-   return new RegExp('(\\s|^)'+name+'(\\s|$)').test(el.className);
-}
-Outface._removeClass = function(el, name){
-   if (Outface._hasClass(el, name)) {
-      el.className=el.className.replace(new RegExp('(\\s|^)'+name+'(\\s|$)'),' ').replace(/^\s+|\s+$/g, '');
-   }
-}
 Outface._event = function(element, name, data, cascade){
 	cascade = cascade != null ? cascade : true;
 	if(element[name] != null)
@@ -130,12 +121,12 @@ Outface._preventScrollClick = function(element, e){
 };
 Outface._open = function(section, data, _root){
 	_root = _root != null ? _root : true;
-	if(Outface._hasClass(section, "open") && !Outface._hasClass(section, "closing"))
+	if(section.classList.contains("open") && !section.classList.contains("closing"))
 		return false;
 
-	Outface._addClass(section, "open");
-	Outface._addClass(section, "opening");
-	Outface._removeClass(section, "closing");
+	section.classList.add("open");
+	section.classList.add("opening");
+	section.classList.remove("closing");
 	
 	Outface._event(section, "open", data, false);
 	
@@ -149,9 +140,9 @@ Outface._open = function(section, data, _root){
 		clearTimeout(section.transitionendTimeout);
 		delete section.transitionendTimeout;
 		
-		Outface._addClass(section, "open");
-		Outface._removeClass(section, "opening");
-		Outface._removeClass(section, "closing");
+		section.classList.add("open");
+		section.classList.remove("opening");
+		section.classList.remove("closing");
 		
 		Outface._event(section, "opened", data);
 	};
@@ -177,14 +168,13 @@ Outface._open = function(section, data, _root){
 		}, 0, section);
 
 	function cascadeOpen(parent){
-		var children = [];
-		for(var i = 0; i < parent.childNodes.length; i++)
-			children.push(parent.childNodes[i]);
-		for(var i = 0; i < children.length; i++){
-			var child = children[i];
-			if(child.nodeType == 1 && Outface._hasClass(child, "open") && !Outface._hasClass(child, "closing")){
-				Outface._removeClass(child, "open")
-				Outface._open(child, data, false);
+		for(var i = 0; i < parent.childNodes.length; i++){
+			var child = parent.childNodes[i];
+			if(child.nodeType == 1 && Outface._getLayoutClass(child) != null){
+				if(child.classList.contains("open") && !child.classList.contains("closing")){
+					child.classList.remove("open");
+					Outface._open(child, data, false);
+				}
 			}
 			else
 				cascadeOpen(child);
@@ -198,12 +188,12 @@ Outface._open = function(section, data, _root){
 	return true;
 };
 Outface._close = function(section, data){
-	if(!Outface._hasClass(section, "open") || Outface._hasClass(section, "closing"))
+	if(!section.classList.contains("open") || section.classList.contains("closing"))
 		return false;
 	
-	Outface._addClass(section, "open");
-	Outface._addClass(section, "closing");
-	Outface._removeClass(section, "opening");	
+	section.classList.add("open");
+	section.classList.add("closing");
+	section.classList.remove("opening");
 
 	Outface._event(section, "close", data);
 
@@ -217,9 +207,9 @@ Outface._close = function(section, data){
 		clearTimeout(section.transitionendTimeout);
 		delete section.transitionendTimeout;
 
-		Outface._removeClass(section, "open");
-		Outface._removeClass(section, "opening");
-		Outface._removeClass(section, "closing");
+		section.classList.remove("open");
+		section.classList.remove("opening");
+		section.classList.remove("closing");
 		
 		Outface._event(section, "closed", data);
 	};
@@ -272,10 +262,10 @@ Outface.register = function(element, context, data){
 	}
 	
 	// iScroll
-	if(Outface._hasClass(element, "scroll") || Outface._hasClass(element, "scroll-x") || Outface._hasClass(element, "scroll-y")){
-		var scrollX = Outface._hasClass(element, "scroll-x");
-		var scrollY = Outface._hasClass(element, "scroll-y");
-		var scrollFree = Outface._hasClass(element, "scroll-free");
+	if(element.classList.contains("scroll") || element.classList.contains("scroll-x") || element.classList.contains("scroll-y")){
+		var scrollX = element.classList.contains("scroll-x");
+		var scrollY = element.classList.contains("scroll-y");
+		var scrollFree = element.classList.contains("scroll-free");
 		if(!scrollX && !scrollY)
 			scrollX = scrollY = true;
 		var config = {
@@ -532,10 +522,10 @@ Outface.page._open = function(section){
 	var siblings = section.parentNode.childNodes;
 	for(var i = siblings.length - 1; i > -1; i--){
 		var sibling = siblings[i];
-		if(sibling.nodeType == 1 && Outface._hasClass(sibling, "page"))
+		if(sibling.nodeType == 1 && sibling.classList.contains("page"))
 			if(sibling == section)
 				break;
-			else if(Outface._hasClass(sibling, "open")){
+			else if(sibling.classList.contains("open")){
 				fromLeft = true;
 				break;
 			}
@@ -552,10 +542,10 @@ Outface.page._close = function(section){
 	var siblings = section.parentNode.childNodes;
 	for(var i = 0; i < siblings.length; i++){
 		var sibling = siblings[i];
-		if(sibling.nodeType == 1 && Outface._hasClass(sibling, "page"))
+		if(sibling.nodeType == 1 && sibling.classList.contains("page"))
 			if(sibling == section)
 				break;
-			else if(Outface._hasClass(sibling, "open")){
+			else if(sibling.classList.contains("open")){
 				toLeft = false;
 				break;
 			}
@@ -564,13 +554,13 @@ Outface.page._close = function(section){
 	section.style.webkitTransform = section.style.transform = "translate3d(" + destination + "px,0,0)";
 };
 Outface.page.open = function(section){
-	Outface._removeClass(section, Outface._getLayoutClass(section));
-	Outface._addClass(section, "page");
+	section.classList.remove(Outface._getLayoutClass(section));
+	section.classList.add("page");
 	Outface.open(section);
 };
 Outface.page.openX = function(section, data){
-	Outface._removeClass(section, Outface._getLayoutClass(section));
-	Outface._addClass(section, "page");
+	section.classList.remove(Outface._getLayoutClass(section));
+	section.classList.add("page");
 	Outface.openX(section, data);
 };
 
@@ -641,13 +631,13 @@ Outface.prompt.confirm = function(content, done, context, buttons){
 	return Outface.prompt.xbuild(p, done, context, buttons);
 };
 Outface.prompt.open = function(section, data){
-	Outface._removeClass(section, Outface._getLayoutClass(section));
-	Outface._addClass(section, "prompt");
+	section.classList.remove(Outface._getLayoutClass(section));
+	section.classList.add("prompt");
 	Outface.open(section, data);
 };
 Outface.prompt.openX = function(section, data){
-	Outface._removeClass(section, Outface._getLayoutClass(section));
-	Outface._addClass(section, "prompt");
+	section.classList.remove(Outface._getLayoutClass(section));
+	section.classList.add("prompt");
 	Outface.openX(section, data);
 };
 
@@ -658,7 +648,7 @@ Outface.notify._refresh = function(layout, direction){
 	var children = layout.childNodes;
 	for(var i = 0; i < children.length; i++){
 		var child = children[i];
-		if(child.nodeType == 1 && Outface._hasClass(child, "notify") && (Outface._hasClass(child, "open") && !Outface._hasClass(child, "closing")))
+		if(child.nodeType == 1 && child.classList.contains("notify") && (child.classList.contains("open") && !child.classList.contains("closing")))
 			notifications.push(child);
 	}
 	var offset = 0;
@@ -750,13 +740,13 @@ Outface.notify.confirm = function(content, done, context, buttons){
 	return Outface.notify.xbuild(p, done, context, buttons, 0);
 };
 Outface.notify.open = function(section, data){
-	Outface._removeClass(section, Outface._getLayoutClass(section));
-	Outface._addClass(section, "notify");
+	section.classList.remove(Outface._getLayoutClass(section));
+	section.classList.add("notify");
 	Outface.open(section, data);
 };
 Outface.notify.openX = function(section, data){
-	Outface._removeClass(section, Outface._getLayoutClass(section));
-	Outface._addClass(section, "notify");
+	section.classList.remove(Outface._getLayoutClass(section));
+	section.classList.add("notify");
 	Outface.openX(section, data);
 };
 
@@ -764,11 +754,11 @@ Outface.notify.openX = function(section, data){
 Outface.dialog = {};
 Outface.dialog._open = function(section, data){
 	Outface._curtain(section);
-	if(Outface._hasClass(section, "dialog-left")) 
+	if(section.classList.contains("dialog-left")) 
 		section.style.webkitTransform = section.style.transform = "translate3d(-100%,0,0)"; 
-	else if(Outface._hasClass(section, "dialog-right")) 
+	else if(section.classList.contains("dialog-right")) 
 		section.style.webkitTransform = section.style.transform = "translate3d(100%,0,0)"; 
-	else if(Outface._hasClass(section, "dialog-top")) 
+	else if(section.classList.contains("dialog-top")) 
 		section.style.webkitTransform = section.style.transform = "translate3d(0,-100%,0)"; 
 	else 
 		section.style.webkitTransform = section.style.transform = "translate3d(0,100%,0)";
@@ -778,23 +768,23 @@ Outface.dialog._open = function(section, data){
 	section.style.webkitTransition = section.style.transition = "";
 };
 Outface.dialog._close = function(section, data){
-	if(Outface._hasClass(section, "dialog-left")) 
+	if(section.classList.contains("dialog-left")) 
 		section.style.webkitTransform = section.style.transform = "translate3d(-200%,0,0)"; 
-	else if(Outface._hasClass(section, "dialog-right")) 
+	else if(section.classList.contains("dialog-right")) 
 		section.style.webkitTransform = section.style.transform = "translate3d(200%,0,0)"; 
-	else if(Outface._hasClass(section, "dialog-top")) 
+	else if(section.classList.contains("dialog-top")) 
 		section.style.webkitTransform = section.style.transform = "translate3d(0,-200%,0)"; 
 	else 
 		section.style.webkitTransform = section.style.transform = "translate3d(0,200%,0)"; 
 };
 Outface.dialog.open = function(section, data){
-	Outface._removeClass(section, Outface._getLayoutClass(section));
-	Outface._addClass(section, "dialog");
+	section.classList.remove(Outface._getLayoutClass(section));
+	section.classList.add("dialog");
 	Outface.open(section, data);
 };
 Outface.dialog.openX = function(section, data){
-	Outface._removeClass(section, Outface._getLayoutClass(section));
-	Outface._addClass(section, "dialog");
+	section.classList.remove(Outface._getLayoutClass(section));
+	section.classList.add("dialog");
 	Outface.openX(section, data);
 };
 
@@ -807,20 +797,17 @@ Outface.menu.clear = function(menu){
 			Outface.menu.deselect(menu.childNodes[i]);
 };
 Outface.menu.select = function(menuitem){
-	Outface._addClass(menuitem, "select");
+	menuitem.classList.add("select");
 };
 Outface.menu.selectX = function(menuitem){
 	Outface.menu.clear(menuitem.parentNode);
-	Outface._addClass(menuitem, "select");
+	menuitem.classList.add("select");
 };
 Outface.menu.deselect = function(menuitem){
-	Outface._removeClass(menuitem, "select");
+	menuitem.classList.remove("select");
 };
 Outface.menu.toggle = function(menuitem){
-	if(Outface._hasClass(menuitem, "select"))
-		Outface._removeClass(menuitem, "select");
-	else
-		Outface._addClass(menuitem, "select");
+	menuitem.classList.toggle("select");
 };
 Outface.menu.bind = function(menuitem, section){
 	section.addEventListener("open", function(){
@@ -842,7 +829,7 @@ Outface.load.start = function(element){
 		if(icon == null)
 			return;
 	
-		Outface._addClass(element, "load");
+		element.classList.add("load");
 		element.oIconClassName = icon.className;
 		icon.className = "fa fa-cog fa-spin load";
 	}
@@ -869,7 +856,7 @@ Outface.load.stop = function(element){
 		if(icon == null)
 			return;
 	
-		Outface._removeClass(element, "load")
+		element.classList.remove("load")
 		icon.className = element.oIconClassName;
 		delete element.oIconClassName;
 	}
@@ -924,7 +911,7 @@ Outface.history._clear = function(context){
 			var section = context.history._array[i][t].section;
 			if(section.hasAttribute("templated"))
 				if(savedReferences.indexOf(section) < 0){
-					if(Outface._hasClass(section, "open"))
+					if(section.classList.contains("open"))
 						section.addEventListener("closed", function(e){
 							this.parentNode.removeChild(this);
 							Outface._event(this, "unregister");
