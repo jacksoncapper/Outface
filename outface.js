@@ -168,8 +168,11 @@ Outface._open = function(section, data, _root){
 		}, 0, section);
 
 	function cascadeOpen(parent){
-		for(var i = 0; i < parent.childNodes.length; i++){
-			var child = parent.childNodes[i];
+		var children = [];
+		for(var i = 0; i < parent.childNodes.length; i++)
+			children.push(parent.childNodes[i]);
+		for(var i = 0; i < children.length; i++){
+			var child = children[i];
 			if(child.nodeType == 1 && Outface._getLayoutClass(child) != null){
 				if(child.classList.contains("open") && !child.classList.contains("closing")){
 					child.classList.remove("open");
