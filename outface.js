@@ -139,7 +139,7 @@ Outface._open = function(section, data, _root){
 		delete section.transitionend;
 		clearTimeout(section.transitionendTimeout);
 		delete section.transitionendTimeout;
-		
+		re
 		section.classList.add("open");
 		section.classList.remove("opening");
 		section.classList.remove("closing");
@@ -273,8 +273,8 @@ Outface.register = function(element, context, data){
 			scrollY : scrollY,
 			mouseWheel: true,
 			preventDefaultException:{tagName:/.*/},
-			eventPassthrough: true,
-			preventDefault: false
+			preventDefault: false,
+			eventPassthrough: scrollX
 		};
 		if(element.iscrollConfig && JSON.stringify(element.iscrollConfig) != JSON.stringify(config)){
 			element.iscroll.destroy();
