@@ -100,7 +100,7 @@ output{ color:rgb(33,33,33); }
 input{ display:inline-block;*display:inline;zoom:1; width:98%;width:calc(100% - 10px); margin:1%;margin:calc(5px); text-align:left; font-size:18px; line-height:1.4em; cursor:text; padding:5px; }
 input[type=checkbox]{ -webkit-appearance:checkbox; width:auto; cursor:pointer; }
 input[type=radio]{ -webkit-appearance:radio; width:auto; cursor:pointer; }
-textarea{ display:inline-block;*display:inline;zoom:1; width:98%;width:calc(100% - 10px); margin:1%;margin:calc(5px); height:100px; text-align:left; padding:5px; font-size:18px; line-height:1.4em; border:solid 5px #000; border-left:0; border-right:0; overflow:auto; }
+textarea{ display:inline-block;*display:inline;zoom:1; width:98%;width:calc(100% - 10px); margin:1%;margin:calc(5px); height:100px; text-align:left; padding:5px; font-size:18px; line-height:1.4em; overflow:auto; }
 select{ display:inline-block;*display:inline;zoom:1; width:98%;width:calc(100% - 10px); margin:1%;margin:calc(5px); text-align:left; padding:5px; font-size:18px; line-height:1.4em; cursor:pointer; }
 .richedit{ border-top:solid 5px rgb(222,222,222); border-bottom:solid 5px rgb(222,222,222); font-size:16px; }
 /* Shades */
