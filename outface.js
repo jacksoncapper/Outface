@@ -21,8 +21,10 @@ var Outface_path = document.currentScript.src.substring(0, document.currentScrip
 var Outface_webappPath = typeof Outface_webappPath != "undefined" ? Outface_webappPath : "/media";
 var Outface_webapp = typeof Outface_webapp != "undefined" ? Outface_webapp : false;
 var metas = [
-	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/outface.css" },
+	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/outface.css?xxxhxxxxxds" },
 	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/media/font-awesome-4.2.0/css/font-awesome.min.css" },
+	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/medium-editor/medium-editor.min.css" },
+	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/medium-editor/outface.min.css" },
 	{ tag:"link", rel:"icon", href:Outface_webappPath + "/icon.png" },
 	{ tag:"link", rel:"apple-touch-icon-precomposed", href:Outface_webappPath + "/icon.png" },
 	{ tag:"link", media:"(device-width:320px)", rel:"apple-touch-startup-image", href:Outface_webappPath + "/iphone.jpg" },
@@ -35,7 +37,8 @@ var metas = [
 	{ tag:"meta", name:"mobile-web-app-capable", content:"yes" },
 	{ tag:"script", src:Outface_path + "/utility/fastclick1.0.3.js" },
 	{ tag:"script", src:Outface_path + "/utility/bowser0.7.2.js" },
-	{ tag:"script", src:Outface_path + "/utility/iscroll5.1.3.js" }
+	{ tag:"script", src:Outface_path + "/utility/iscroll5.1.3.js" },
+	{ tag:"script", src:Outface_path + "/utility/medium-editor/medium-editor.min.js" }
 ];
 var Outface_scriptCount = 0;
 var Outface_scriptLoadedCount = 0;
@@ -279,7 +282,7 @@ Outface.register = function(element, context, data){
 			preventDefault: false,
 			eventPassthrough: scrollX
 		};
-		if(element.iscrollConfig && JSON.stringify(element.iscrollConfig) != JSON.stringify(config)){
+		if(element.iscrollConfig != null && JSON.stringify(element.iscrollConfig) != JSON.stringify(config)){
 			element.iscroll.destroy();
 			element.iscroll = null;
 			element.iscrollConfig = null;
@@ -293,6 +296,35 @@ Outface.register = function(element, context, data){
 		var clickers = element.getElementsByTagName("a");
 		for(var i = 0; i < clickers.length; i++)
 			clickers[i].setAttribute("onclick", "if(!Outface._preventScrollClick(this, event)) return false;" + clickers[i].getAttribute("onclick"));
+	}
+	
+	// Medium Editor
+	if(element.hasAttribute("contenteditable")){
+		var config = {};
+		if(element.mediumeditorConfig != null && JSON.stringify(element.mediumeditorConfig) != JSON.stringify(config)){
+			element.mediumeditor.destroy();
+			element.mediumeditor = null;
+			element.mediumeditorConfig = null;
+		}
+		if(!element.mediumeditor){
+			element.mediumeditor = new MediumEditor(element, JSON.parse(JSON.stringify(config)));
+			element.mediumeditorConfig = config;
+		}
+	}
+	
+	// IE tr:active Bug Fix
+	if(bowser.msie && element.tagName == "TR"){
+		if(element.activeMouseDown != null){
+			element.removeEventListener("mousedown", element.activeMouseDown);
+			element.removeEventListener("mouseup", element.activeMouseUp);
+		}
+		if(element.hasAttribute("onclick")){
+			element.activeMouseDown = function(){ this.classList.add("tr-onclick-active"); };
+			element.activeMouseUp = function(){ this.classList.remove("tr-onclick-active"); };
+			element.addEventListener("mousedown", element.activeMouseDown);
+			element.addEventListener("mouseup", element.activeMouseUp);
+			element.addEventListener("mouseleave", element.activeMouseUp);
+		}
 	}
 };
 Outface.clone = function(template, data){
