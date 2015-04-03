@@ -22,7 +22,7 @@ var Outface_webappPath = typeof Outface_webappPath != "undefined" ? Outface_weba
 var Outface_webapp = typeof Outface_webapp != "undefined" ? Outface_webapp : false;
 var metas = [
 	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/outface.css?xxxhxxxxxds" },
-	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/media/font-awesome-4.2.0/css/font-awesome.min.css" },
+	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/font-awesome/css/font-awesome.min.css" },
 	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/medium-editor/medium-editor.min.css" },
 	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/medium-editor/outface.min.css" },
 	{ tag:"link", rel:"icon", href:Outface_webappPath + "/icon.png" },
