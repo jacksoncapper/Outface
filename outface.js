@@ -278,7 +278,9 @@ Outface.register = function(element, context, data){
 			scrollX : scrollX,
 			scrollY : scrollY,
 			mouseWheel: true,
-			eventPassthrough: scrollX
+			eventPassthrough: scrollX,
+			preventDefault: true,
+			preventDefaultException: {tagName:/.*/}
 		};
 		if(element.iscrollConfig != null && JSON.stringify(element.iscrollConfig) != JSON.stringify(config)){
 			element.iscroll.destroy();
@@ -622,7 +624,7 @@ Outface.prompt.xbuild = function(content, close, context, buttons){
 		buttons[i].className = buttons[i].className != null ? buttons[i].className : "";
 	}
 	
-	var section = document.createElement("section");
+	var section = document.createElement("sectionis");
 	section.className = "prompt prompt-x prime shell ym modal";
 	section.setAttribute("template", "");
 	section.innerHTML = "<div class='p1-2 xf'><div class='x1-1'></div><br/><div class='x1-1 xb'></div></div>";
