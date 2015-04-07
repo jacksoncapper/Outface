@@ -278,8 +278,6 @@ Outface.register = function(element, context, data){
 			scrollX : scrollX,
 			scrollY : scrollY,
 			mouseWheel: true,
-			preventDefaultException:{tagName:/.*/},
-			preventDefault: false,
 			eventPassthrough: scrollX
 		};
 		if(element.iscrollConfig != null && JSON.stringify(element.iscrollConfig) != JSON.stringify(config)){
