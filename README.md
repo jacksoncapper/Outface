@@ -1,4 +1,4 @@
-<h1>Outface 2.5.7</h1>
+<h1>Outface 2.5.8</h1>
 <p>A complete, web-based GUI engine for seamless scaling on all platforms</p>
 
 <h3>License</h3>
