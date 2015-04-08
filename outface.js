@@ -387,7 +387,10 @@ window.addEventListener("load", function(){
 			setTimeout(load, 100);
 			return;
 		}
+		
 		FastClick.attach(document.body);
+		if(bowser.mobile && bowser.ios)
+			document.addEventListener("touchmove", function(e){ e.preventDefault(); }, false);
 		if(Outface_webapp)
 			Outface.webapp();
 		else
