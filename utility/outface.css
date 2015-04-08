@@ -173,7 +173,7 @@ button.control:active,button.control.load{ border-color:rgb(66,66,66); backgroun
 
 /* Link */
 /* Shades */
-p a:active,small a:active,h1 a:active,h2 a:active,h3 a:active,h4 a:active,h5 a:active,h6 a:active,label a:active,aside a:active,blockquote a:active{ color:#FFF; }
+p a:active,small a:active,h1 a:active,h2 a:active,h3 a:active,h4 a:active,h5 a:active,h6 a:active,label a:active,aside a:active,blockquote a:active{ color:#FFF; text-decoration:none; }
 
 /* Nav */
 nav{ display:inline-block;*display:inline;zoom:1; }
