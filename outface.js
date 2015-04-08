@@ -432,6 +432,7 @@ Outface.theme.apply = function(){
 		"nav li a":{ "color":Outface.theme.prime },
 		"nav li.select a":{ "color":Outface.theme.accent, "border-color":Outface.theme.accent },
 		"p a,small a,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,label a,aside a,blockquote a":{ "color":Outface.theme.link },
+		"p a:active,small a:active,h1 a:active,h2 a:active,h3 a:active,h4 a:active,h5 a:active,h6 a:active,label a:active,aside a:active,blockquote a:active":{ "background-color":Outface.theme.link },
 		".page>.tab":{ "background-color":Outface.theme.prime }
 	};
 	var css = "";
