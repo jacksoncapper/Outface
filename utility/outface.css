@@ -281,7 +281,7 @@ sup{ font-size:.7em; vertical-align:super; }
 .flex header{ position:relative; width:100%; -webkit-flex-shrink:0; flex-shrink:0; z-index:1; }
 .flex main{ position:relative; display:block; width:100%; -webkit-box-flex:1; -ms-flex:1; -webkit-flex-grow:1; flex-grow:1; }
 .flex footer{ position:relative; width:100%; -webkit-flex-shrink:0; flex-shrink:0; z-index:1; }
-body.flex{ display:flex; } 
+body.flex{ display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:flex; }
 /* Alignment */
 .xf{ text-align:left; }
 .xm{ text-align:center; }
