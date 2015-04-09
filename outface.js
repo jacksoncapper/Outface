@@ -280,7 +280,9 @@ Outface.register = function(element, context, data){
 			mouseWheel: true,
 			eventPassthrough: scrollX,
 			preventDefault: true,
-			preventDefaultException: {tagName:/.*/}
+			preventDefaultException: {tagName:/.*/},
+			scrollbars: true,
+			fadeScrollbars: true
 		};
 		if(element.iscrollConfig != null && JSON.stringify(element.iscrollConfig) != JSON.stringify(config)){
 			element.iscroll.destroy();
