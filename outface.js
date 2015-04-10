@@ -295,16 +295,11 @@ Outface.register = function(element, context, data){
 		}
 		else
 			setTimeout(function(){ element.iscroll.refresh(); }, 250);
-		var clickers = element.getElementsByTagName("a");
+		var clickers = element.getElementsByTagName("*");
 		for(var i = 0; i < clickers.length; i++){
 			var clicker = clickers[i];
-			if(clicker.preventScrollClickOriginal != null)
-				if(clicker.getAttribute("onclick") != "if(!Outface._preventScrollClick(this, event)) return false;" + clicker.preventScrollClickOriginal)
-					clicker.preventScrollClickOriginal = null;
-			if(clicker.preventScrollClickOriginal == null){
-				clicker.preventScrollClickOriginal = clicker.getAttribute("onclick");
-				clicker.setAttribute("onclick", "if(!Outface._preventScrollClick(this, event)) return false;" + clicker.getAttribute("onclick"));
-			}
+			if(clicker.tagName == "A" || clicker.hasAttribute("onclick") && clicker.getAttribute("onclick").indexOf("if(!Outface._preventScrollClick(this, event)) return false; ") < 0)
+				clicker.setAttribute("onclick", "if(!Outface._preventScrollClick(this, event)) return false; " + clicker.getAttribute("onclick"));
 		}
 	}
 	
