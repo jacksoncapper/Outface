@@ -298,7 +298,7 @@ Outface.register = function(element, context, data){
 		var clickers = element.getElementsByTagName("*");
 		for(var i = 0; i < clickers.length; i++){
 			var clicker = clickers[i];
-			if(clicker.tagName == "A" || (clicker.hasAttribute("onclick") && clicker.getAttribute("onclick").indexOf("if(!Outface._preventScrollClick(this, event)) return false;") < 0))
+			if((clicker.hasAttribute("href") || clicker.hasAttribute("onclick")) && clicker.getAttribute("onclick").indexOf("if(!Outface._preventScrollClick(this, event)) return false;") < 0)
 				clicker.setAttribute("onclick", "if(!Outface._preventScrollClick(this, event)) return false;" + clicker.getAttribute("onclick"));
 		}
 	}
