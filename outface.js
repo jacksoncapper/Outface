@@ -296,10 +296,11 @@ Outface.register = function(element, context, data){
 		else
 			setTimeout(function(){ element.iscroll.refresh(); }, 250);
 		var clickers = element.getElementsByTagName("*");
+		var preventScrollClickStr = "if(!Outface._preventScrollClick(this, event)) return false;";
 		for(var i = 0; i < clickers.length; i++){
 			var clicker = clickers[i];
-			if((clicker.hasAttribute("href") || clicker.hasAttribute("onclick")) && clicker.getAttribute("onclick").indexOf("if(!Outface._preventScrollClick(this, event)) return false;") < 0)
-				clicker.setAttribute("onclick", "if(!Outface._preventScrollClick(this, event)) return false;" + clicker.getAttribute("onclick"));
+			if(clicker.hasAttribute("href") || clicker.hasAttribute("onclick"))
+				clicker.setAttribute("onclick", preventScrollClickStr + (clicker.hasAttribute("onclick") ? clicker.getAttribute("onclick").replace(preventScrollClickStr, "") : ""));
 		}
 	}
 	
