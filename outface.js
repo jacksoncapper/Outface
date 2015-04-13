@@ -283,7 +283,8 @@ Outface.register = function(element, context, data){
 				preventDefault: true,
 				preventDefaultException: {tagName:/.*/},
 				scrollbars: true,
-				fadeScrollbars: true
+				fadeScrollbars: true,
+				interactiveScrollbars: true
 			};
 			if(element.iscrollConfig != null && JSON.stringify(element.iscrollConfig) != JSON.stringify(config)){
 				element.iscroll.destroy();
