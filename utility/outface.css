@@ -332,7 +332,7 @@ body.flex{ display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:
 .notify{ position:absolute; left:0; bottom:0; right:0; -webkit-transition:-webkit-transform .5s,opacity .5s;transition:transform .5s,opacity .5s; }
 
 /* Curtain */
-.curtain{ position:absolute; left:0; top:0; right:0; bottom:0; text-align:center; -webkit-transition:opacity .5s;transition:opacity .5s; background-color:#000; opacity:.75; z-index:1; }
+.curtain{ position:absolute; left:0; top:0; right:0; bottom:0; text-align:center; -webkit-transition:opacity .5s;transition:opacity .5s; background-color:#000; opacity:.75; z-index:1; background-color:#666\9;/* IE8 */ }
 
 /* Load */
 .load-cover{ position:absolute; left:0; top:0; right:0; bottom:0; text-align:center; -webkit-transition:opacity .5s;transition:opacity .5s; background-color:rgba(255,255,255,.75); z-index:1; }
@@ -340,8 +340,8 @@ body.flex{ display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:
 
 /* Scroll */
 .scroll{ overflow:hidden; }
-.scroll-x{ overflow:hidden; white-space:nowrap; }
-.scroll-y{ overflow:hidden; }
+.scroll-x{ overflow:hidden; white-space:nowrap; overflow-x:auto\9;/* IE8 */ }
+.scroll-y{ overflow:hidden; overflow-y:auto\9;/* IE8 */ }
 
 /* Default Modifiers */
 .i{ display:inline-block;*display:inline;zoom:1; vertical-align:inherit; width:auto; }
