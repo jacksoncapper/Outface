@@ -21,7 +21,7 @@ var Outface_path = document.currentScript.src.substring(0, document.currentScrip
 var Outface_webappPath = typeof Outface_webappPath != "undefined" ? Outface_webappPath : "/media";
 var Outface_webapp = typeof Outface_webapp != "undefined" ? Outface_webapp : false;
 var metas = [
-	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/outface.css?xxxxx" },
+	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/outface.css" },
 	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/font-awesome/css/font-awesome.min.css" },
 	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/medium-editor/medium-editor.min.css" },
 	{ tag:"link", rel:"stylesheet", type:"text/css", href:Outface_path + "/utility/medium-editor/outface.min.css" },
@@ -470,7 +470,7 @@ Outface.theme.apply = function(){
 		"nav li a":{ "color":Outface.theme.prime },
 		"nav li.select a":{ "color":Outface.theme.accent, "border-color":Outface.theme.accent },
 		"p a,small a,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,label a,aside a,blockquote a":{ "color":Outface.theme.link },
-		"p a:active,small a:active,h1 a:active,h2 a:active,h3 a:active,h4 a:active,h5 a:active,h6 a:active,label a:active,aside a:active,blockquote a:active":{ "background-color":Outface.theme.link },
+		"article p a:active,article small a:active,article h1 a:active,article h2 a:active,article h3 a:active,article h4 a:active,article h5 a:active,article h6 a:active,article label a:active,article aside a:active,article blockquote a:active":{ "background-color":Outface.theme.link },
 		".page>.tab":{ "background-color":Outface.theme.prime }
 	};
 	var css = "";
