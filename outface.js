@@ -114,9 +114,9 @@ Outface._event = function(element, name, data, cascade){
 	}
 };
 Outface._preventScrollClick = function(element, e){
-	while(element.iscroll == null)
+	while(element.iscroll == null && element != document.body)
 		element = element.parentNode;
-	if(element.iscroll.moved){
+	if(element.iscroll != null && element.iscroll.moved){
 		e.preventDefault;
 		return false;
 	}
