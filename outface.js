@@ -908,7 +908,7 @@ Outface.load.start = function(element){
 	
 		element.classList.add("load");
 		element.oIconClassName = icon.className;
-		icon.className = "fa fa-cog fa-spin load";
+		icon.className = "fa fa-cog fa-fw fa-spin load";
 	}
 	else{
 		if(element.outfaceLoad != null)
