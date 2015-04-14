@@ -315,24 +315,36 @@ body.flex{ display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:
 .open{ display:block; }
 .flex.open{ display:-webkit-inline-box;display:-ms-inline-flexbox;display:-webkit-inline-flex;display:inline-flex; -webkit-box-orient:vertical;-ms-flex-direction:column;-webkit-flex-direction:column; }
 
+/* Section */
+.page,.prompt,.notify,.dialog{ display:none; z-index:1; overflow:hidden; }
+
+/* Face */
+.open{ display:block; }
+.flex.open{ display:-webkit-inline-box;display:-ms-inline-flexbox;display:-webkit-inline-flex;display:inline-flex; -webkit-box-orient:vertical;-ms-flex-direction:column;-webkit-flex-direction:column; }
+
 /* Dialog */
 .dialog{ position:absolute; left:20px; top:0; right:20px; bottom:0; margin:auto; width:auto; opacity:1; -webkit-transition:opacity .5s,-webkit-transform .5s;transition:opacity .5s,transform .5s; }
 .dialog-top{ left:20px; top:0; right:20px; bottom:0; width:100%; }
 .dialog-right{ left:auto; top:0; right:0; bottom:0; width:calc(100% - 40px); }
 .dialog-bottom{ left:20px; top:0; right:20px; bottom:0; width:100%; }
 .dialog-left{ left:0; top:0; right:auto; bottom:0; width:calc(100% - 40px); }
+body>.dialog{ position:fixed; }
 
 /* Prompt */
 .prompt{ position:absolute; top:50%; width:100%; left:0; max-height:100%; z-index:1; -webkit-transition:opacity .25s,-webkit-transform .25s;transition:opacity .25s,transform .25s; }
+body>.prompt{ position:fixed; }
 
 /* Page */
 .page{ position:absolute; left:0; top:0; bottom:0; right:0; -webkit-transition:-webkit-transform .5s,opacity .5s;transition:transform .5s,opacity .5s; }
+body>.page{ position:fixed; }
 
 /* Notifies */
 .notify{ position:absolute; left:0; bottom:0; right:0; -webkit-transition:-webkit-transform .5s,opacity .5s;transition:transform .5s,opacity .5s; }
+body>.notify{ position:fixed; }
 
 /* Curtain */
 .curtain{ position:absolute; left:0; top:0; right:0; bottom:0; text-align:center; -webkit-transition:opacity .5s;transition:opacity .5s; background-color:#000; opacity:.75; z-index:1; background-color:#666\9;/* IE8 */ }
+body>.curtain{ position:fixed; }
 
 /* Load */
 .load-cover{ position:absolute; left:0; top:0; right:0; bottom:0; text-align:center; -webkit-transition:opacity .5s;transition:opacity .5s; background-color:rgba(255,255,255,.75); z-index:1; }
