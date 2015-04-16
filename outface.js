@@ -421,10 +421,11 @@ window.addEventListener("load", function(){
 		}
 		
 		FastClick.attach(document.body);
-		if(bowser.mobile && bowser.ios)
-			document.addEventListener("touchmove", function(e){ e.preventDefault(); }, false);
-		if(Outface_webapp)
+		if(Outface_webapp){
+			if(bowser.mobile && bowser.ios)
+				document.addEventListener("touchmove", function(e){ e.preventDefault(); }, false);
 			Outface.webapp();
+		}
 		else
 			Outface.upbrowse();
 		Outface.register(document.body);
